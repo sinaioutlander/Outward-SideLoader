@@ -56,26 +56,22 @@ namespace SideLoader.Patches
             if (_loadedDead || !__instance.enabled || PhotonNetwork.isNonMasterClientInRoom || !SL_DropTableAddition.s_registeredDropTableSources.Any())
                 return;
 
-            var m_character = At.GetField(__instance, "m_character") as Character;
+            //var m_character = At.GetField(__instance, "m_character") as Character;
 
-            if (!m_character)
+            if (!__instance.m_character)
                 return;
 
-            bool wasAlive = (bool)At.GetField(__instance, "m_wasAlive");
-
-            if (!m_character.Alive || (m_character.IsDead && wasAlive))
+            if (!__instance.m_character.Alive || (__instance.m_character.IsDead && __instance.m_wasAlive))
             {
-                var drops = (Dropable[])At.GetField(__instance, "m_lootDroppers");
-
-                if (drops == null || !drops.Any())
+                if (__instance.m_lootDroppers == null || !__instance.m_lootDroppers.Any())
                     return;
 
-                foreach (var dropable in drops)
+                foreach (var dropable in __instance.m_lootDroppers)
                 {
                     foreach (var dropAddition in SL_DropTableAddition.s_registeredDropTableSources)
                     {
                         if (dropAddition.IsTargeting(dropable.name))
-                            dropAddition.GenerateItems(m_character.Inventory.Pouch.transform);
+                            dropAddition.GenerateItems(__instance.m_character.Inventory.Pouch.transform);
                     }
                 }
             }
@@ -93,9 +89,7 @@ namespace SideLoader.Patches
             if (PhotonNetwork.isNonMasterClientInRoom)
                 return;
 
-            var drops = At.GetField(__instance, "m_drops") as List<Dropable>;
-
-            foreach (var dropable in drops)
+            foreach (var dropable in __instance.m_drops)
             {
                 foreach (var dropAddition in SL_DropTableAddition.s_registeredDropTableSources)
                 {

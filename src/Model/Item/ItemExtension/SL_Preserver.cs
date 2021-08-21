@@ -22,7 +22,6 @@ namespace SideLoader
             if (this.PreservedElements != null)
             {
                 var list = new List<Preserver.PreservedElement>();
-
                 foreach (var ele in this.PreservedElements)
                 {
                     list.Add(new Preserver.PreservedElement
@@ -31,8 +30,7 @@ namespace SideLoader
                         Tag = new TagSourceSelector(CustomTags.GetTag(ele.PreservedItemTag)),
                     });
                 }
-
-                At.SetField(comp, "m_preservedElements", list);
+                comp.m_preservedElements = list;
             }
         }
 
@@ -42,7 +40,7 @@ namespace SideLoader
 
             this.NullifyPerish = comp.NullifyPerishing;
 
-            var list = (List<Preserver.PreservedElement>)At.GetField(comp, "m_preservedElements");
+            var list = comp.m_preservedElements;
             if (list != null)
             {
                 var slList = new List<SL_PreservedElement>();

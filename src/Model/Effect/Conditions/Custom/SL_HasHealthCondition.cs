@@ -45,7 +45,7 @@ namespace SideLoader
         /// <summary>If true and CheckPercent is true, it will only consider the active max health and not the total max health.</summary>
         public bool IgnoreBurntForPercent;
 
-        protected override bool CheckIsValid(Character _affectedCharacter)
+        public override bool CheckIsValid(Character _affectedCharacter)
         {
             if (!_affectedCharacter || !_affectedCharacter.Stats)
                 return false;

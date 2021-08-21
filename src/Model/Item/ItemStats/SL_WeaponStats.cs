@@ -19,14 +19,10 @@ namespace SideLoader
             var wStats = stats as WeaponStats;
 
             if (this.AttackSpeed != null)
-            {
                 wStats.AttackSpeed = (float)this.AttackSpeed;
-            }
 
             if (this.Impact != null)
-            {
                 wStats.Impact = (float)this.Impact;
-            }
 
             if (this.BaseDamage != null)
             {
@@ -34,24 +30,17 @@ namespace SideLoader
 
                 // fix for m_activeBaseDamage
                 var weapon = wStats.GetComponent<Weapon>();
-                At.SetField(weapon, "m_activeBaseDamage", wStats.BaseDamage.Clone());
-                At.SetField(weapon, "m_baseDamage", wStats.BaseDamage.Clone());
+                weapon.m_activeBaseDamage = wStats.BaseDamage.Clone();
+                weapon.m_baseDamage = wStats.BaseDamage.Clone();
             }
 
             if (this.StamCost != null)
-            {
                 wStats.StamCost = (float)this.StamCost;
-            }
 
             if (AutoGenerateAttackData || this.Attacks == null || this.Attacks.Length < 1)
-            {
-                // SL.Log("Generating AttackData automatically");
                 wStats.Attacks = GetScaledAttackData(wStats.GetComponent<Weapon>());
-            }
             else
-            {
                 wStats.Attacks = Attacks;
-            }
         }
 
         public override void SerializeStats(ItemStats stats)
@@ -112,9 +101,7 @@ namespace SideLoader
             var floats = new List<float>();
 
             foreach (var type in list.List)
-            {
                 floats.Add(type.Damage * multiplier);
-            }
 
             return floats;
         }

@@ -123,11 +123,11 @@ namespace SideLoader
                         {
                             //SL.Log($"Adding tag {tag.TagName} to " + ingredientItem.name);
 
-                            if (!ingredientItem.GetComponent<TagSource>())
-                                ingredientItem.gameObject.AddComponent<TagSource>();
+                            var comp = ingredientItem.GetComponent<TagSource>();
+                            if (!comp)
+                                comp = ingredientItem.gameObject.AddComponent<TagSource>();
 
-                            ((List<TagSourceSelector>)At.GetField<TagListSelectorComponent>(ingredientItem.GetComponent<TagSource>(), "m_tagSelectors"))
-                                .Add(new TagSourceSelector(tag));
+                            comp.m_tagSelectors.Add(new TagSourceSelector(tag));
                         }
 
                         ingredients.Add(new RecipeIngredient()
@@ -142,7 +142,7 @@ namespace SideLoader
 
                 recipe.SetCraftingType(this.StationType);
 
-                At.SetField(recipe, "m_results", results.ToArray());
+                recipe.m_results = results.ToArray();
                 recipe.SetRecipeIngredients(ingredients.ToArray());
 
                 // set or generate UID
@@ -157,12 +157,10 @@ namespace SideLoader
                             uid += $"{ing.AddedIngredientType.Tag.TagName}";
                     }
                     this.UID = uid;
-                    At.SetField(recipe, "m_uid", new UID(uid));
+                    recipe.m_uid = new UID(uid);
                 }
                 else
-                {
-                    At.SetField(recipe, "m_uid", new UID(this.UID));
-                }
+                    recipe.m_uid = new UID(this.UID);
 
                 recipe.Init();
 

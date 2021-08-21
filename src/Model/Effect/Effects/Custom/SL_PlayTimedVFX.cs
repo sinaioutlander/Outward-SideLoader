@@ -36,7 +36,7 @@ namespace SideLoader
 
         public float AutoStopTime;
 
-        protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
+        public override void ActivateLocally(Character _affectedCharacter, object[] _infos)
         {
             base.ActivateLocally(_affectedCharacter, _infos);
 
@@ -48,10 +48,7 @@ namespace SideLoader
         {
             yield return new WaitForSeconds(AutoStopTime);
 
-            if (At.GetField(this as PlayVFX, "m_startVFX") is VFXSystem vfx)
-                vfx.Stop();
-            else
-                SL.LogWarning("SL_PlayTimedVFX.DelayedStopCoroutine - vfx was null after delay");
+            this.m_startVFX?.Stop();
         }
     }
 }

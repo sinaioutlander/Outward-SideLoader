@@ -11,7 +11,7 @@
 
         public override void SerializeEffect<T>(T effect)
         {
-            AffectQuantity = (float)At.GetField(effect as AffectNeed, "m_affectQuantity");
+            AffectQuantity = (effect as AffectNeed).m_affectQuantity;
         }
     }
 }

@@ -147,9 +147,8 @@ namespace SideLoader
                 return;
             }
 
-            //var path = GAMInstance.GetPrefabPath(_sound);
-            var path = (string)At.Invoke(GAMInstance, "GetPrefabPath", _sound);
-            var resource = Resources.Load<GameObject>("_Sounds/" + path);
+            var path = GAMInstance.GetPrefabPath(_sound);
+            var resource = Resources.Load<GameObject>($"_Sounds/{path}");
             var component = resource.GetComponent<AudioSource>();
             component.clip = _newClip;
 

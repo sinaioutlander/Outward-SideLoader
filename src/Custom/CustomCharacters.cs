@@ -330,9 +330,8 @@ namespace SideLoader
         {
             yield return new WaitForSeconds(0.1f);
 
-            var m_characters = At.GetField(CharacterManager.Instance, "m_characters") as DictionaryExt<string, Character>;
-            if (m_characters.ContainsKey(character.UID))
-                m_characters.Remove(character.UID);
+            if (CharacterManager.Instance.m_characters.ContainsKey(character.UID))
+                CharacterManager.Instance.m_characters.Remove(character.UID);
 
             var view = character.photonView;
             int viewID = view?.viewID ?? -1;
@@ -362,9 +361,8 @@ namespace SideLoader
                     GameObject.Destroy(pStats);
             }
             // add new CharacterStats
-            var newStats = character.gameObject.AddComponent<CharacterStats>();
-            At.SetField(character, "m_characterStats", newStats);
-            SetupBlankCharacterStats(newStats);
+            character.m_characterStats = character.gameObject.AddComponent<CharacterStats>();
+            SetupBlankCharacterStats(character.m_characterStats);
         }
 
 
@@ -374,22 +372,18 @@ namespace SideLoader
         /// <param name="stats"></param>
         public static void SetupBlankCharacterStats(CharacterStats stats)
         {
-            At.SetField(stats, "m_damageResistance",
-                new Stat[] { new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f) });
-            At.SetField(stats, "m_damageProtection",
-                new Stat[] { new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f) });
-            At.SetField(stats, "m_damageTypesModifier",
-                new Stat[] { new Stat(1f), new Stat(1f), new Stat(1f), new Stat(1f), new Stat(1f), new Stat(1f), new Stat(1f), new Stat(1f), new Stat(1f) });
-
-            At.SetField(stats, "m_heatRegenRate", new Stat(0f));
-            At.SetField(stats, "m_coldRegenRate", new Stat(0f));
-            At.SetField(stats, "m_heatProtection", new Stat(0f));
-            At.SetField(stats, "m_coldProtection", new Stat(0f));
-            At.SetField(stats, "m_corruptionResistance", new Stat(0f));
-            At.SetField(stats, "m_waterproof", new Stat(0f));
-            At.SetField(stats, "m_healthRegen", new Stat(0f));
-            At.SetField(stats, "m_manaRegen", new Stat(0f));
-            At.SetField(stats, "m_statusEffectsNaturalImmunity", new TagSourceSelector[0]);
+            stats.m_damageResistance = new Stat[] { new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f) };
+            stats.m_damageProtection = new Stat[] { new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f) };
+            stats.m_damageTypesModifier = new Stat[] { new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f), new Stat(0f) };
+            stats.m_heatRegenRate = new Stat(0f);
+            stats.m_coldRegenRate = new Stat(0f);
+            stats.m_heatProtection = new Stat(0f);
+            stats.m_coldProtection = new Stat(0f);
+            stats.m_corruptionResistance = new Stat(0f);
+            stats.m_waterproof = new Stat(0f);
+            stats.m_healthRegen = new Stat(0f);
+            stats.m_manaRegen = new Stat(0f);
+            stats.m_statusEffectsNaturalImmunity = new TagSourceSelector[0];
         }
 
         #endregion
@@ -432,7 +426,7 @@ namespace SideLoader
 
                 // fix clone UIDs, etc
                 var character = clone.GetComponent<Character>();
-                At.SetField(character, "m_uid", UID.Generate());
+                character.m_uid = UID.Generate();
                 clone.name = "[CLONE] " + character.Name + "_" + character.UID;
 
                 // allocate a scene view ID (will need RPC if to work in multiplayer)

@@ -24,8 +24,7 @@ namespace SideLoader
                     SL.LogWarning("SL_LevelAttackSkill: could not find a status by the name of '" + this.WatchedStatusIdentifier + "'");
             }
 
-            var stages = At.GetField(comp, "m_skillStages") as LevelAttackSkill.SkillStage[];
-
+            var stages = comp.m_skillStages;
             int newMax = this.Stages?.Length ?? stages.Length;
 
             if (this.Stages != null)
@@ -48,15 +47,13 @@ namespace SideLoader
             // check for custom level icons
             if (!string.IsNullOrEmpty(SLPackName) && !string.IsNullOrEmpty(SubfolderName) && SL.GetSLPack(SLPackName) is SLPack pack)
             {
-                var dir = $@"{pack.GetPathForCategory<ItemCategory>()}\{SubfolderName}\Textures";
+                var dir = Path.Combine(pack.GetPathForCategory<ItemCategory>(), SubfolderName, "Textures");
 
                 for (int i = 0; i < newMax; i++)
                 {
-                    //var path = dir + $@"\icon{i + 2}.png";
-
-                    if (pack.FileExists(dir, $@"icon{i + 2}.png"))
+                    if (pack.FileExists(dir, $"icon{i + 2}.png"))
                     {
-                        var tex = pack.LoadTexture2D(dir, $@"icon{i + 2}.png");
+                        var tex = pack.LoadTexture2D(dir, $"icon{i + 2}.png");
                         var sprite = CustomTextures.CreateSprite(tex, CustomTextures.SpriteBorderTypes.NONE);
 
                         stages[i].StageIcon = sprite;
@@ -64,7 +61,7 @@ namespace SideLoader
                 }
             }
 
-            At.SetField(comp, "m_skillStages", stages);
+            comp.m_skillStages = stages;
         }
 
         public override void SerializeItem(Item item)
@@ -75,7 +72,7 @@ namespace SideLoader
 
             WatchedStatusIdentifier = comp.WatchedStatus?.IdentifierName;
 
-            var stages = (LevelAttackSkill.SkillStage[])At.GetField(comp, "m_skillStages");
+            var stages = comp.m_skillStages;
             if (stages != null)
             {
                 this.Stages = new SL_SkillStage[stages.Length];

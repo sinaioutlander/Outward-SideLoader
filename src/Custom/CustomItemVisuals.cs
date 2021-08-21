@@ -101,10 +101,10 @@ namespace SideLoader
             }
             else
             {
-                At.SetField(item, "m_itemIcon", sprite);
+                item.m_itemIcon = sprite;
 
                 if (item.HasDefaultIcon)
-                    At.SetField(item, "m_itemIconPath", "notnull");
+                    item.m_itemIconPath = "notnull";
 
                 link.ItemIcon = sprite;
             }

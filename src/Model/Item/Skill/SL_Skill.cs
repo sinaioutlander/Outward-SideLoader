@@ -128,7 +128,7 @@ namespace SideLoader
                             else
                                 msgLoc = "Notification_Skill_RequirementsNotMet";
 
-                            At.SetField(skillCondition, "m_messageLocKey", msgLoc);
+                            skillCondition.m_messageLocKey = msgLoc;
 
                             activationConditions.Add(skillCondition);
                         }
@@ -136,7 +136,7 @@ namespace SideLoader
                 }
             }
 
-            At.SetField(skill, "m_additionalConditions", activationConditions.ToArray());
+            skill.m_additionalConditions = activationConditions.ToArray();
 
             LateApply(skill);
         }

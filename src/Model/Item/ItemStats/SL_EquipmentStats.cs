@@ -37,58 +37,58 @@ namespace SideLoader
             var eStats = stats as EquipmentStats;
 
             if (this.Damage_Resistance != null)
-                At.SetField(eStats, "m_damageResistance", this.Damage_Resistance);
+                eStats.m_damageResistance = this.Damage_Resistance;
 
             if (this.Impact_Resistance != null)
-                At.SetField(eStats, "m_impactResistance", (float)this.Impact_Resistance);
+                eStats.m_impactResistance = (float)this.Impact_Resistance;
 
             if (this.Damage_Protection != null)
-                At.SetField(eStats, "m_damageProtection", new float[9] { (float)this.Damage_Protection, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f });
+                eStats.m_damageProtection = new float[9] {(float)this.Damage_Protection, 0, 0, 0, 0, 0, 0, 0, 0 };
 
             if (this.Damage_Bonus != null)
-                At.SetField(eStats, "m_damageAttack", this.Damage_Bonus);
+                eStats.m_damageAttack = this.Damage_Bonus;
 
             if (this.Impact_Bonus != null)
-                At.SetField(eStats, "m_baseImpactModifier", this.Impact_Bonus);
+                eStats.m_baseImpactModifier = (float)this.Impact_Bonus;
 
             if (this.Stamina_Use_Penalty != null)
-                At.SetField(eStats, "m_staminaUsePenalty", (float)this.Stamina_Use_Penalty);
+                eStats.m_staminaUsePenalty = (float)this.Stamina_Use_Penalty;
 
             if (this.Mana_Use_Modifier != null)
-                At.SetField(eStats, "m_manaUseModifier", (float)this.Mana_Use_Modifier);
+                eStats.m_manaUseModifier = (float)this.Mana_Use_Modifier;
 
             if (this.Mana_Regen != null)
-                At.SetField(eStats, "m_baseManaRegenBonus", (float)this.Mana_Regen);
+                eStats.m_baseManaRegenBonus = (float)this.Mana_Regen;
 
             if (this.Movement_Penalty != null)
-                At.SetField(eStats, "m_movementPenalty", (float)this.Movement_Penalty);
+                eStats.m_movementPenalty = (float)this.Movement_Penalty;
 
             if (this.Pouch_Bonus != null)
-                At.SetField(eStats, "m_pouchCapacityBonus", (float)this.Pouch_Bonus);
+                eStats.m_pouchCapacityBonus = (float)this.Pouch_Bonus;
 
             if (this.Heat_Protection != null)
-                At.SetField(eStats, "m_heatProtection", (float)this.Heat_Protection);
+                eStats.m_heatProtection = (float)this.Heat_Protection;
 
             if (this.Cold_Protection != null)
-                At.SetField(eStats, "m_coldProtection", (float)this.Cold_Protection);
+                eStats.m_coldProtection = (float)this.Cold_Protection;
 
             if (this.Corruption_Protection != null)
-                At.SetField(eStats, "m_corruptionProtection", (float)this.Corruption_Protection);
+                eStats.m_corruptionProtection = (float)this.Corruption_Protection;
 
             if (this.Cooldown_Reduction != null)
-                At.SetField(eStats, "m_baseCooldownReductionBonus", (float)this.Cooldown_Reduction);
+                eStats.m_baseCooldownReductionBonus = (float)this.Cooldown_Reduction;
 
             if (this.Health_Regen != null)
-                At.SetField(eStats, "m_baseHealthRegenBonus", (float)this.Health_Regen);
+                eStats.m_baseHealthRegenBonus = (float)this.Health_Regen;
 
             if (this.BarrierProtection != null)
-                At.SetField(eStats, "m_baseBarrierProtection", (float)this.BarrierProtection);
+                eStats.m_baseBarrierProtection = (float)this.BarrierProtection;
 
             if (this.GlobalStatusEffectResistance != null)
-                At.SetField(eStats, "m_baseStatusEffectResistance", (float)this.GlobalStatusEffectResistance);
+                eStats.m_baseStatusEffectResistance = (float)this.GlobalStatusEffectResistance;
 
             if (this.StaminaRegenModifier != null)
-                At.SetField(eStats, "m_baseStaminaRegen", this.StaminaRegenModifier);
+                eStats.m_baseStaminaRegen = (float)this.StaminaRegenModifier;
         }
 
         public override void SerializeStats(ItemStats stats)
@@ -117,8 +117,8 @@ namespace SideLoader
                 GlobalStatusEffectResistance = eStats.GlobalStatusEffectResistance;
                 StaminaRegenModifier = eStats.StaminaRegenModifier;
 
-                Damage_Bonus = At.GetField(eStats, "m_damageAttack") as float[];
-                Damage_Resistance = At.GetField(eStats, "m_damageResistance") as float[];
+                Damage_Bonus = eStats.m_damageAttack;
+                Damage_Resistance = eStats.m_damageResistance;
                 Impact_Bonus = eStats.ImpactModifier;
             }
             catch (Exception e)

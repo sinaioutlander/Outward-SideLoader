@@ -149,10 +149,10 @@ namespace SideLoader
                 status.RefreshRate = (float)RefreshRate;
 
             if (this.Priority != null)
-                At.SetField(status, "m_priority", (int)this.Priority);
+                status.m_priority = (int)this.Priority;
 
             if (this.Purgeable != null)
-                At.SetField(status, "m_purgeable", (bool)this.Purgeable);
+                status.m_purgeable = (bool)this.Purgeable;
 
             if (this.DelayedDestroyTime != null)
                 status.DelayedDestroyTime = (int)this.DelayedDestroyTime;
@@ -173,7 +173,7 @@ namespace SideLoader
                 status.IsMalusEffect = (bool)this.IsMalusEffect;
 
             if (this.ActionOnHit != null)
-                At.SetField(status, "m_actionOnHit", (StatusEffect.ActionsOnHit)this.ActionOnHit);
+                status.m_actionOnHit = (StatusEffect.ActionsOnHit)this.ActionOnHit;
 
             if (this.RemoveRequiredStatus != null)
                 status.RemoveRequiredStatus = (bool)this.RemoveRequiredStatus;
@@ -185,18 +185,12 @@ namespace SideLoader
                 status.IgnoreBarrier = (bool)this.IgnoreBarrier;
 
             if (this.StatusIdentifier != this.TargetStatusIdentifier)
-                At.SetField(status, "m_effectType", new TagSourceSelector(Tag.None));
+                status.m_effectType = new TagSourceSelector(Tag.None);
 
             if (Tags != null)
-            {
-                var tagSource = CustomTags.SetTagSource(status.gameObject, Tags, true);
-                At.SetField(status, "m_tagSource", tagSource);
-            }
+                status.m_tagSource = (TagSource)CustomTags.SetTagSource(status.gameObject, Tags, true);
             else if (!status.GetComponent<TagSource>())
-            {
-                var tagSource = status.gameObject.AddComponent<TagSource>();
-                At.SetField(status, "m_tagSource", tagSource);
-            }
+                status.m_tagSource = status.gameObject.AddComponent<TagSource>();
 
             if (this.PlayFXOnActivation != null)
                 status.PlayFXOnActivation = (bool)this.PlayFXOnActivation;
@@ -234,23 +228,21 @@ namespace SideLoader
                     StackBehavior = StatusEffectFamily.StackBehaviors.IndependantUnique
                 };
 
-                At.SetField(status, "m_bindFamily", family);
-                At.SetField(status, "m_familyMode", StatusEffect.FamilyModes.Bind);
+                status.m_bindFamily = family;
+                status.m_familyMode = StatusEffect.FamilyModes.Bind;
             }
 
             if (this.FamilyMode == StatusEffect.FamilyModes.Bind)
             {
-                At.SetField(status, "m_familyMode", StatusEffect.FamilyModes.Bind);
-
+                status.m_familyMode = StatusEffect.FamilyModes.Bind;
                 if (this.BindFamily != null)
-                    At.SetField(status, "m_bindFamily", this.BindFamily.CreateAsBindFamily());
+                    status.m_bindFamily = this.BindFamily.CreateAsBindFamily();
             }
             else if (this.FamilyMode == StatusEffect.FamilyModes.Reference)
             {
-                At.SetField(status, "m_familyMode", StatusEffect.FamilyModes.Reference);
-
+                status.m_familyMode = StatusEffect.FamilyModes.Reference;
                 if (this.ReferenceFamilyUID != null)
-                    At.SetField(status, "m_stackingFamily", new StatusEffectFamilySelector() { SelectorValue = this.ReferenceFamilyUID });
+                    status.m_stackingFamily = new StatusEffectFamilySelector() { SelectorValue = this.ReferenceFamilyUID };
             }
 
             // check for custom icon
@@ -258,7 +250,7 @@ namespace SideLoader
                 && !string.IsNullOrEmpty(SerializedSubfolderName) 
                 && SL.GetSLPack(SerializedSLPackName) is SLPack pack)
             {
-                var dir = $@"{pack.GetPathForCategory<StatusCategory>()}\{SerializedSubfolderName}";
+                var dir = Path.Combine(pack.GetPathForCategory<StatusCategory>(), SerializedSubfolderName);
 
                 if (pack.FileExists(dir, "icon.png"))
                 {
@@ -266,7 +258,7 @@ namespace SideLoader
                     var sprite = CustomTextures.CreateSprite(tex, CustomTextures.SpriteBorderTypes.NONE);
 
                     status.OverrideIcon = sprite;
-                    At.SetField(status, "m_defaultStatusIcon", new StatusTypeIcon(Tag.None) { Icon = sprite });
+                    status.m_defaultStatusIcon = new StatusTypeIcon(Tag.None) { Icon = sprite };
                 }
             }
         }
@@ -317,14 +309,12 @@ namespace SideLoader
                 {
                     var amp = ResourcesPrefabManager.Instance.GetStatusEffectPrefab(AmplifiedStatusIdentifier);
                     if (amp)
-                        At.SetField(status, "m_amplifiedStatus", amp);
+                        status.m_amplifiedStatus = amp;
                     else
                         SL.Log("StatusEffect.ApplyTemplate - could not find AmplifiedStatusIdentifier " + this.AmplifiedStatusIdentifier);
                 }
                 else
-                {
-                    At.SetField(status, "m_amplifiedStatus", null);
-                }
+                    status.m_amplifiedStatus = null;
             }
 
             // setup signature and finalize
@@ -368,7 +358,7 @@ namespace SideLoader
             }
 
             // Need to reset description after changing effects.
-            At.Invoke(status, "RefreshLoc");
+            status.RefreshLoc();
         }
 
         // Generate StatusData for the StatusEffect automatically
@@ -382,13 +372,13 @@ namespace SideLoader
             // Get and Set the Effects list
             var effects = signature.GetComponentsInChildren<Effect>()?.ToList() ?? new List<Effect>();
             signature.Effects = effects;
-            At.SetField(status, "m_effectList", effects);
+            status.m_effectList = effects;
 
             // Finally, set the EffectsData[] array.
             status.StatusData.EffectsData = GenerateEffectsData(effects);
 
             // Not sure if this is needed or not, but I'm doing it to be extra safe.
-            At.SetField(status, "m_totalData", status.StatusData.EffectsData);
+            status.m_totalData = status.StatusData.EffectsData;
         }
 
         public static StatusData.EffectData[] GenerateEffectsData(List<Effect> effects, int level = 1)
@@ -510,14 +500,14 @@ namespace SideLoader
 
             this.ActionOnHit = status.ActionOnHit;
 
-            this.Priority = (int)At.GetField(status, "m_priority");
+            this.Priority = status.m_priority;
 
             this.DelayedDestroyTime = status.DelayedDestroyTime;
             this.Purgeable = status.Purgeable;
 
             CustomStatusEffects.GetStatusLocalization(status, out Name, out Description);
 
-            var tags = At.GetField(status, "m_tagSource") as TagListSelectorComponent;
+            var tags = status.m_tagSource;
             if (tags)
                 Tags = tags.Tags.Select(it => it.TagName).ToArray();
 

@@ -13,7 +13,7 @@ namespace SideLoader
         public static readonly BF FLAGS = BF.Public | BF.Instance | BF.NonPublic | BF.Static;
 
         // ============ Main public API ============
-
+        
         /// <summary>Helper to set an instance value on a non-static class. Use SetFieldStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the field in it.</typeparam>
         /// <param name="value">The value you want to set.</param>
@@ -21,79 +21,79 @@ namespace SideLoader
         /// <param name="instance">The instance to use. Can be used to implicitly declare T if not null.</param>
         public static void SetField<T>(T instance, string fieldName, object value)
             => Internal_SetField(typeof(T), fieldName, instance, value);
-
+        
         /// <summary>Helper to set a static value on a non-static class. Use SetFieldStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the field in it.</typeparam>
         /// <param name="value">The value you want to set.</param>
         /// <param name="fieldName">The name of the field you want to set.</param>
         public static void SetField<T>(string fieldName, object value)
             => Internal_SetField(typeof(T), fieldName, null, value);
-
+        
         /// <summary>Helper to set a value on a Static Class (not just a static member of a class, use SetField&lt;T&gt; for that).</summary>
         /// <param name="value">The value you want to set.</param>
         /// <param name="type">The declaring class with the field in it.</param>
         /// <param name="fieldName">The name of the field you want to set.</param>
         public static void SetFieldStatic(Type type, string fieldName, object value)
             => Internal_SetField(type, fieldName, null, value);
-
+        
         internal static void Internal_SetField(Type type, string fieldName, object instance, object value)
         {
             if (type == null)
                 return;
-
+        
             var fi = GetFieldInfo(type, fieldName);
             if (fi == null)
             {
                 SL.LogWarning($"Could not find FieldInfo for Type '{type?.FullName ?? "<null>"}', field '{fieldName}'!");
                 return;
             }
-
+        
             if (fi.IsStatic)
                 fi.SetValue(null, value);
             else
                 fi.SetValue(instance, value);
         }
-
+        
         /// <summary>Helper to get an instance value on a non-static class. Use GetFieldStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the field in it.</typeparam>
         /// <param name="fieldName">The name of the field you want to get.</param>
         /// <param name="instance">The instance to use, or null for static members. Can be used to implicitly declare T if not null.</param>
         public static object GetField<T>(T instance, string fieldName)
             => Internal_GetField(typeof(T), fieldName, instance);
-
+        
         /// <summary>Helper to get a static value on a non-static class. Use GetFieldStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the field in it.</typeparam>
         /// <param name="fieldName">The name of the field you want to get.</param>
         public static object GetField<T>(string fieldName)
             => Internal_GetField(typeof(T), fieldName, null);
-
+        
         /// <summary>Helper to get a value on a Static Class (not just a static member of a class, use GetField&lt;T&gt; for that).</summary>
         /// <param name="type">The declaring class with the field in it.</param>
         /// <param name="fieldName">The name of the field you want to get.</param>
         public static object GetFieldStatic(Type type, string fieldName)
             => Internal_GetField(type, fieldName, null);
-
+        
         internal static object Internal_GetField(Type type, string fieldName, object instance)
             => Internal_GetField<object>(type, fieldName, instance);
-
+        
         internal static R Internal_GetField<R>(Type type, string fieldName, object instance)
         {
             if (type == null)
                 return default;
-
+        
             var fi = GetFieldInfo(type, fieldName);
             if (fi == null)
             {
                 SL.LogWarning($"Could not find FieldInfo for Type '{type?.FullName ?? "<null>"}', field '{fieldName}'!");
                 return default;
             }
-
+        
             if (fi.IsStatic)
                 return (R)fi.GetValue(null);
             else
                 return (R)fi.GetValue(instance);
         }
-
+        
         /// <summary>Helper to set an instance value on a non-static class. Use SetPropertyStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the property in it.</typeparam>
         /// <param name="value">The value you want to set.</param>
@@ -101,33 +101,33 @@ namespace SideLoader
         /// <param name="instance">The instance to use, or null for static members. Can be used to implicitly declare T if not null.</param>
         public static void SetProperty<T>(T instance, string propertyName, object value)
             => Internal_SetProperty(typeof(T), propertyName, value, instance);
-
+        
         /// <summary>Helper to set a static value on a non-static class. Use SetPropertyStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the property in it.</typeparam>
         /// <param name="value">The value you want to set.</param>
         /// <param name="propertyName">The name of the property you want to set.</param>
         public static void SetProperty<T>(string propertyName, object value)
             => Internal_SetProperty(typeof(T), propertyName, value, null);
-
+        
         /// <summary>Helper to set a value on a Static Class (not just a static member of a class, use SetProperty&lt;T&gt; for that).</summary>
         /// <param name="value">The value you want to set.</param>
         /// <param name="type">The declaring class with the property in it.</param>
         /// <param name="propertyName">The name of the property you want to set.</param>
         public static void SetPropertyStatic(Type type, string propertyName, object value)
             => Internal_SetProperty(type, propertyName, value, null);
-
+        
         internal static void Internal_SetProperty(Type type, string propertyName, object value, object instance)
         {
             if (type == null)
                 return;
-
+        
             var pi = GetPropertyInfo(type, propertyName);
             if (pi == null || !pi.CanWrite)
             {
                 SL.LogWarning($"Could not find setter PropertyInfo for Type '{type?.FullName ?? "<null>"}', field '{propertyName}'!");
                 return;
             }
-
+        
             try
             {
                 var setter = pi.GetSetMethod(true);
@@ -141,41 +141,41 @@ namespace SideLoader
                 SL.Log($"{e.GetType()} setting property {pi.Name}: {e.Message}\r\n{e.StackTrace}");
             }
         }
-
+        
         /// <summary>Helper to get an instance value on a non-static class. Use GetPropertyStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the property in it.</typeparam>
         /// <param name="propertyName">The name of the property you want to get.</param>
         /// <param name="instance">The instance to use, or null for static members. Can be used to implicitly declare T if not null.</param>
         public static object GetProperty<T>(T instance, string propertyName)
             => Internal_GetProperty(typeof(T), propertyName, instance);
-
+        
         /// <summary>Helper to get a static value on a non-static class. Use GetPropertyStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the property in it.</typeparam>
         /// <param name="propertyName">The name of the property you want to get.</param>
         public static object GetProperty<T>(string propertyName)
             => Internal_GetProperty(typeof(T), propertyName, null);
-
+        
         /// <summary>Helper to get a value on a Static Class (not just a static member of a class, use GetProperty&lt;T&gt; for that).</summary>
         /// <param name="type">The declaring class with the property in it.</param>
         /// <param name="propertyName">The name of the property you want to get.</param>
         public static object GetPropertyStatic(Type type, string propertyName)
             => Internal_GetProperty(type, propertyName, null);
-
+        
         internal static object Internal_GetProperty(Type type, string propertyName, object instance)
             => Internal_GetProperty<object>(type, propertyName, instance);
-
+        
         internal static R Internal_GetProperty<R>(Type type, string propertyName, object instance)
         {
             if (type == null)
                 return default;
-
+        
             var pi = GetPropertyInfo(type, propertyName);
             if (pi == null || !pi.CanRead)
             {
                 SL.LogWarning($"Could not find getter PropertyInfo for Type '{type?.FullName ?? "<null>"}', field '{propertyName}'!");
                 return default;
             }
-
+        
             try
             {
                 var getter = pi.GetGetMethod(true);
@@ -190,7 +190,7 @@ namespace SideLoader
                 return default;
             }
         }
-
+        
         /// <summary>Helper to call an instance method on a non-static class. Use InvokeStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the method in it.</typeparam>
         /// <param name="methodName">The name of the method to invoke</param>
@@ -199,7 +199,7 @@ namespace SideLoader
         /// <returns>The return value of the method.</returns>
         public static object Invoke<T>(T instance, string methodName, params object[] args)
             => Internal_Invoke(typeof(T), methodName, null, instance, args);
-
+        
         /// <summary>Helper to call a static method on a non-static class. Use InvokeStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the method in it.</typeparam>
         /// <param name="methodName">The name of the method to invoke</param>
@@ -207,7 +207,7 @@ namespace SideLoader
         /// <returns>The return value of the method.</returns>
         public static object Invoke<T>(string methodName, params object[] args)
             => Internal_Invoke(typeof(T), methodName, null, null, args);
-
+        
         /// <summary>Helper to call an ambiguous instance method on a non-static class. Use InvokeStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the method in it.</typeparam>
         /// <param name="methodName">The name of the method to invoke</param>
@@ -217,7 +217,7 @@ namespace SideLoader
         /// <returns>The return value of the method.</returns>
         public static object Invoke<T>(T instance, string methodName, Type[] argumentTypes, params object[] args)
             => Internal_Invoke(typeof(T), methodName, argumentTypes, instance, args);
-
+        
         /// <summary>Helper to call an ambiguous static method on a non-static class. Use InvokeStatic for Static Classes.</summary>
         /// <typeparam name="T">The declaring class with the method in it.</typeparam>
         /// <param name="methodName">The name of the method to invoke</param>
@@ -226,7 +226,7 @@ namespace SideLoader
         /// <returns>The return value of the method.</returns>
         public static object Invoke<T>(string methodName, Type[] argumentTypes, params object[] args)
             => Internal_Invoke(typeof(T), methodName, argumentTypes, null, args);
-
+        
         /// <summary>Helper to call a method on a Static Class (not just a static member of a class, use Invoke&lt;T&gt; for that).</summary>
         /// <param name="type">The declaring class with the method in it.</param>
         /// <param name="methodName">The name of the method to invoke</param>
@@ -234,7 +234,7 @@ namespace SideLoader
         /// <returns>The return value of the method.</returns>
         public static object InvokeStatic(Type type, string methodName, params object[] args)
             => Internal_Invoke(type, methodName, null, null, args);
-
+        
         /// <summary>Helper to call an ambiguous method on a Static Class (not just a static member of a class, use Invoke&lt;T&gt; for that).</summary>
         /// <param name="type">The declaring class with the method in it.</param>
         /// <param name="methodName">The name of the method to invoke</param>
@@ -243,22 +243,22 @@ namespace SideLoader
         /// <returns>The return value of the method.</returns>
         public static object InvokeStatic(Type type, string methodName, Type[] argumentTypes, params object[] args)
             => Internal_Invoke(type, methodName, argumentTypes, null, args);
-
+        
         internal static object Internal_Invoke(Type type, string methodName, Type[] argumentTypes, object instance, params object[] args)
             => Internal_Invoke<object>(type, methodName, argumentTypes, instance, args);
-
+        
         internal static R Internal_Invoke<R>(Type type, string methodName, Type[] argumentTypes, object instance, params object[] args)
         {
             if (type == null)
                 return default;
-
+        
             var mi = GetMethodInfo(type, methodName, argumentTypes);
             if (mi == null)
             {
                 SL.LogWarning($"Could not find MethodInfo for Type '{type?.FullName ?? "<null>"}', field '{methodName}'!");
                 return default;
             }
-
+        
             try
             {
                 if (mi.IsStatic)

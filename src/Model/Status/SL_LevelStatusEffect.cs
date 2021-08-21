@@ -24,10 +24,10 @@ namespace SideLoader
         {
             var comp = obj[0] as LevelStatusEffect;
 
-            int origMax = (int)At.GetField(comp, "m_maxLevel");
+            int origMax = comp.m_maxLevel;
             int newMax = MaxLevel ?? origMax;
 
-            At.SetField(comp, "m_maxLevel", newMax);
+            comp.m_maxLevel = newMax;
 
             Sprite[] origIcons = new Sprite[origMax - 1];
 
@@ -64,12 +64,12 @@ namespace SideLoader
                 && !string.IsNullOrEmpty(SerializedSubfolderName) 
                 && SL.GetSLPack(SerializedSLPackName) is SLPack pack)
             {
-                var dir = $@"{pack.GetPathForCategory<StatusCategory>()}\{SerializedSubfolderName}";
+                var dir = Path.Combine(pack.GetPathForCategory<StatusCategory>(), SerializedSubfolderName);
                 for (int i = 0; i < newMax - 1; i++)
                 {
-                    if (pack.FileExists(dir, $@"icon{i + 2}.png"))
+                    if (pack.FileExists(dir, $"icon{i + 2}.png"))
                     {
-                        var tex = pack.LoadTexture2D(dir, $@"icon{i + 2}.png");
+                        var tex = pack.LoadTexture2D(dir, $"icon{i + 2}.png");
                         var sprite = CustomTextures.CreateSprite(tex, CustomTextures.SpriteBorderTypes.NONE);
 
                         //list.Add(sprite);
@@ -90,7 +90,7 @@ namespace SideLoader
         {
             base.SerializeStatus(status);
 
-            this.MaxLevel = (int)At.GetField(status as LevelStatusEffect, "m_maxLevel");
+            this.MaxLevel = (status as LevelStatusEffect).m_maxLevel;
         }
     }
 }

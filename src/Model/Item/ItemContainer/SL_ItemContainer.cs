@@ -27,7 +27,7 @@ namespace SideLoader
             var comp = item as ItemContainer;
 
             if (this.BaseContainerCapacity != null)
-                At.SetField(comp, "m_baseContainerCapacity", (float)this.BaseContainerCapacity);
+                comp.m_baseContainerCapacity = (float)this.BaseContainerCapacity;
 
             if (this.SpecialType != null)
                 comp.SpecialType = (ItemContainer.SpecialContainerTypes)this.SpecialType;
@@ -45,7 +45,7 @@ namespace SideLoader
                 comp.CanReceiveCharacterItems = (bool)this.CanReceiveCharacterItems;
 
             if (this.CanRemoveItems != null)
-                At.SetField(comp, "m_canRemoveItems", (bool)this.CanRemoveItems);
+                comp.m_canRemoveItems = (bool)this.CanRemoveItems;
 
             if (this.NonSavableContent != null)
                 comp.NonSavableContent = (bool)this.NonSavableContent;
@@ -69,8 +69,7 @@ namespace SideLoader
 
             var comp = item as ItemContainer;
 
-            this.BaseContainerCapacity = (float)At.GetField(comp, "m_baseContainerCapacity");
-
+            this.BaseContainerCapacity = comp.m_baseContainerCapacity;
             this.SpecialType = comp.SpecialType;
             this.OpenSound = comp.OpenSoundOverride;
             this.AllowOverCapacity = comp.AllowOverCapacity;
@@ -94,8 +93,8 @@ namespace SideLoader
         {
             component.MatchOnEmpty = this.MatchOnEmpty;
 
-            At.SetField(component, "m_equipmentTypes", this.EquipmentTypes);
-            At.SetField(component, "m_tagTypeFilters", this.TagTypes);
+            component.m_equipmentTypes = this.EquipmentTypes;
+            component.m_tagTypeFilters = this.TagTypes;
         }
 
         public static SL_ItemFilter ParseItemFilter(ItemFilter itemFilter)
@@ -108,8 +107,8 @@ namespace SideLoader
                 MatchOnEmpty = itemFilter.MatchOnEmpty,
             };
 
-            ret.EquipmentTypes = (List<EquipmentSlot.EquipmentSlotIDs>)At.GetField(itemFilter, "m_equipmentTypes");
-            ret.TagTypes = (List<Tag.TagTypes>)At.GetField(itemFilter, "m_tagTypeFilters");
+            ret.EquipmentTypes = itemFilter.m_equipmentTypes;
+            ret.TagTypes = itemFilter.m_tagTypeFilters;
 
             return ret;
         }

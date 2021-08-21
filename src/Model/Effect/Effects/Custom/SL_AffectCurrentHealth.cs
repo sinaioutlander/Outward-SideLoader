@@ -31,7 +31,7 @@ namespace SideLoader
 
         public float HealthPercent;
 
-        protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
+        public override void ActivateLocally(Character _affectedCharacter, object[] _infos)
         {
             if (_affectedCharacter && _affectedCharacter.Alive)
             {

@@ -43,7 +43,7 @@ namespace SideLoader
                 StackBehavior = (StatusEffectFamily.StackBehaviors)this.StackBehaviour
             };
 
-            At.SetField(ret, "m_uid", new UID(this.UID));
+            ret.m_uid = new UID(this.UID);
 
             return ret;
         }
@@ -74,7 +74,7 @@ namespace SideLoader
             }
 
             if (this.UID != null)
-                At.SetField(family, "m_uid", new UID(this.UID));
+                family.m_uid = new UID(this.UID);
 
             if (this.Name != null)
                 family.Name = this.Name;

@@ -21,7 +21,7 @@ namespace SideLoader
                 comp.BuildingToUpgrade = ResourcesPrefabManager.Instance.GetItemPrefab((int)this.BuildingToUpgradeID) as Building;
 
             if (this.SnappingRadius != null)
-                At.SetField(comp, "m_snappingRadius", (float)this.SnappingRadius);
+                comp.m_snappingRadius = (float)this.SnappingRadius;
 
             if (this.UpgradeFromIndex != null)
                 comp.UpgradeFromIndex = (int)this.UpgradeFromIndex;
@@ -45,7 +45,7 @@ namespace SideLoader
             var comp = extension as BuildingUpgrade;
 
             this.BuildingToUpgradeID = comp.BuildingToUpgrade?.ItemID;
-            this.SnappingRadius = (float)At.GetField(comp, "m_snappingRadius");
+            this.SnappingRadius = comp.m_snappingRadius;
             this.UpgradeFromIndex = comp.UpgradeFromIndex;
             this.UpgradeIndex = comp.UpgradeIndex;
 

@@ -187,7 +187,7 @@ namespace SideLoader
                 Directory.CreateDirectory(dir);
 
             byte[] data;
-            string savepath = dir + @"\" + name + ".png";
+            string savepath = Path.Combine(dir, $"{name}.png");
 
             // Make sure we can EncodeToPNG it.
             if (tex.format != TextureFormat.ARGB32 || !tex.isReadable)

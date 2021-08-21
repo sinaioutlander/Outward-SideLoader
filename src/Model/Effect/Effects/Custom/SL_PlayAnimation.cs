@@ -44,7 +44,7 @@ namespace SideLoader
         public Character.SpellCastModifier Modifier;
         public int SheatheRequired;
 
-        protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
+        public override void ActivateLocally(Character _affectedCharacter, object[] _infos)
         {
             _affectedCharacter.SpellCastAnim(Animation, Modifier, SheatheRequired);
         }

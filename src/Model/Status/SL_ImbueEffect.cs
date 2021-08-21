@@ -96,7 +96,7 @@ namespace SideLoader
             // check for custom icon
             if (!string.IsNullOrEmpty(SLPackName) && !string.IsNullOrEmpty(SubfolderName) && SL.GetSLPack(SLPackName) is SLPack pack)
             {
-                var dir = $@"{pack.GetPathForCategory<StatusCategory>()}\{SubfolderName}";
+                var dir = Path.Combine(pack.GetPathForCategory<StatusCategory>(), SubfolderName);
 
                 if (pack.FileExists(dir, "icon.png"))
                 {

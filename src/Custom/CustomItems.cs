@@ -150,13 +150,12 @@ namespace SideLoader
 
             // set the local fields on the item (this should be enough for 99% of cases)
 
-            At.SetField(item, "m_name", name);
-            At.SetField(item, "m_localizedName", name);
-            At.SetField(item, "m_lastNameLang", LocalizationManager.Instance.CurrentLanguage);
+            item.m_name = name;
+            item.m_localizedName = name;
+            item.m_lastNameLang = LocalizationManager.Instance.CurrentLanguage;
+            item.m_localizedDescription = desc;
+            item.m_lastDescLang = LocalizationManager.Instance.CurrentLanguage;
 
-            At.SetField(item, "m_localizedDescription", desc);
-            At.SetField(item, "m_lastDescLang", LocalizationManager.Instance.CurrentLanguage);
-            
             // set the localization to the LocalizationManager dictionary
 
             var loc = new ItemLocalization(name, desc);
@@ -203,7 +202,7 @@ namespace SideLoader
         public static void SetItemTags(Item item, string[] tags, bool destroyExisting)
         {
             var tagsource = CustomTags.SetTagSource(item.gameObject, tags, destroyExisting);
-            At.SetField(item, "m_tagSource", tagsource);
+            item.m_tagSource = (TagSource)tagsource;
         }
 
         [Obsolete("Use SL.DestroyChildren instead! (Moved)")]

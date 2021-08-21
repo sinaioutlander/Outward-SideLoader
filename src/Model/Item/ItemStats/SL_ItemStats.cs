@@ -13,20 +13,16 @@ namespace SideLoader
         {
             //set base value
             if (this.BaseValue != null)
-            {
-                At.SetField(stats, "m_baseValue", (int)this.BaseValue);
-            }
+                stats.m_baseValue = (int)this.BaseValue;
 
             //set raw weight
             if (this.RawWeight != null)
-            {
-                At.SetField(stats, "m_rawWeight", (float)this.RawWeight);
-            }
+                stats.m_rawWeight = (float)this.RawWeight;
 
             //max durability
             if (this.MaxDurability != null)
             {
-                At.SetField(stats, "m_baseMaxDurability", (int)this.MaxDurability);
+                stats.m_baseMaxDurability = (int)this.MaxDurability;
                 stats.StartingDurability = (int)this.MaxDurability;
             }
         }

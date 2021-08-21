@@ -6,12 +6,12 @@
 
         public override void ApplyToComponent<T>(T component)
         {
-            At.SetField(component as AddAbsorbHealth, "m_healthRatio", this.HealthRatio);
+            (component as AddAbsorbHealth).m_healthRatio = this.HealthRatio;
         }
 
         public override void SerializeEffect<T>(T effect)
         {
-            this.HealthRatio = (float)At.GetField(effect as AddAbsorbHealth, "m_healthRatio");
+            this.HealthRatio = (effect as AddAbsorbHealth).m_healthRatio;
         }
     }
 }

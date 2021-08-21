@@ -61,23 +61,21 @@ namespace SideLoader
 
             // set the name to the gameobject and the skill tree name/uid
             m_object.name = this.Name;
-            At.SetField(school, "m_defaultName", this.Name);
-            At.SetField(school, "m_nameLocKey", "");
+            school.m_defaultName = this.Name;
+            school.m_nameLocKey = "";
 
             if (string.IsNullOrEmpty(this.UID))
                 this.UID = this.Name;
-            At.SetField(school, "m_uid", new UID(this.UID));
+            school.m_uid = new UID(this.UID);
 
             // TODO set currency and icon
 
             // fix the breakthrough int
-            At.SetField(school, "m_breakthroughSkillIndex", -1);
+            school.m_breakthroughSkillIndex = -1;
 
             // set the sprite
             if (this.Sigil)
-            {
                 school.SchoolSigil = this.Sigil;
-            }
             else if (!string.IsNullOrEmpty(this.SigilIconName) && !string.IsNullOrEmpty(this.SLPackName))
             {
                 var pack = SL.GetSLPack(this.SLPackName);
@@ -96,9 +94,9 @@ namespace SideLoader
             }
 
             // add it to the game's skill tree holder.
-            var list = (At.GetField(SkillTreeHolder.Instance, "m_skillTrees") as SkillSchool[]).ToList();
+            var list = SkillTreeHolder.Instance.m_skillTrees.ToList();
             list.Add(school);
-            At.SetField(SkillTreeHolder.Instance, "m_skillTrees", list.ToArray());
+            SkillTreeHolder.Instance.m_skillTrees = list.ToArray();
 
             if (applyRowsInstantly)
                 ApplyRows();
@@ -106,12 +104,7 @@ namespace SideLoader
             return school;
         }
 
-        public void ApplyRows()
-        {
-            var list = (At.GetField(SkillTreeHolder.Instance, "m_skillTrees") as SkillSchool[]).ToList();
-            var treeID = list.Count;
-            ApplyRows(treeID);
-        }
+        public void ApplyRows() => ApplyRows(SkillTreeHolder.Instance.m_skillTrees.Length);
 
         public void ApplyRows(int treeID)
         {
@@ -123,8 +116,8 @@ namespace SideLoader
 
             var school = m_object.GetComponent<SkillSchool>();
 
-            At.SetField(school, "m_branches", new List<SkillBranch>());
-            At.SetField(school, "m_skillSlots", new List<BaseSkillSlot>());
+            school.m_branches = new List<SkillBranch>();
+            school.m_skillSlots = new List<BaseSkillSlot>();
 
             for (int i = 0; i < 6; i++)
             {
@@ -206,7 +199,7 @@ namespace SideLoader
                 var reqslot = reqcolTrans.GetComponent<BaseSkillSlot>();
                 if (reqslot)
                 {
-                    At.SetField(comp, "m_requiredSkillSlot", reqslot);
+                    comp.m_requiredSkillSlot = reqslot;
                     success = true;
                 }
             }
@@ -227,7 +220,7 @@ namespace SideLoader
             col.transform.parent = row;
 
             var comp = col.AddComponent<SkillSlotFork>();
-            At.SetField(comp as BaseSkillSlot, "m_columnIndex", this.ColumnIndex);
+            comp.m_columnIndex = this.ColumnIndex;
 
             if (this.RequiredSkillSlot != Vector2.zero)
                 SetRequiredSlot(comp);
@@ -253,8 +246,8 @@ namespace SideLoader
             var comp = col.AddComponent<SkillSlot>();
             comp.IsBreakthrough = Breakthrough;
 
-            At.SetField(comp, "m_requiredMoney", SilverCost);
-            At.SetField(comp as BaseSkillSlot, "m_columnIndex", ColumnIndex);
+            comp.m_requiredMoney = SilverCost;
+            comp.m_columnIndex = ColumnIndex;
 
             var skill = ResourcesPrefabManager.Instance.GetItemPrefab(SkillID) as Skill;
 
@@ -264,9 +257,8 @@ namespace SideLoader
                 return comp;
             }
 
-            At.SetField(comp, "m_skill", skill);
-
-            At.SetField(skill, "m_schoolIndex", treeID);
+            comp.m_skill = skill;
+            skill.m_schoolIndex = treeID;
             //SL.LogWarning("Set " + treeID + " for " + skill.Name + "'s treeID");
 
             if (this.RequiredSkillSlot != Vector2.zero)

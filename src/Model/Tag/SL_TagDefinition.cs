@@ -19,7 +19,7 @@
             var tag = CustomTags.CreateTag(TagName);
 
             if (!string.IsNullOrEmpty(this.OptionalTagUID))
-                At.SetField(tag, "m_uid", new UID(this.OptionalTagUID));
+                tag.m_uid = new UID(this.OptionalTagUID);
         }
     }
 }

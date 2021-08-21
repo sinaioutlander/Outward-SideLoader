@@ -13,11 +13,8 @@ namespace SideLoader.Patches
         [HarmonyPrefix]
         public static void Prefix(Deployable __instance)
         {
-            var item = At.GetField(__instance as ItemExtension, "m_item") as Item;
-            if (!item)
-                item = __instance.GetComponent<Item>();
-
-            At.SetField(__instance as ItemExtension, "m_item", item);
+            if (!__instance.m_item)
+                __instance.m_item = __instance.GetComponent<Item>();
         }
     }
 }

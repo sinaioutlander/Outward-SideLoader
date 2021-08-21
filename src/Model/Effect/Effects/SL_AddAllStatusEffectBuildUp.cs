@@ -14,7 +14,7 @@
             comp.BuildUpValue = this.BuildUpValue;
             comp.NoDealer = this.NoDealer;
             comp.AffectController = this.AffectController;
-            At.SetField(comp, "m_buildUpBonus", this.BuildUpBonus);
+            comp.m_buildUpBonus = this.BuildUpBonus;
         }
 
         public override void SerializeEffect<T>(T effect)
@@ -24,7 +24,7 @@
             BuildUpValue = comp.BuildUpValue;
             NoDealer = comp.NoDealer;
             AffectController = comp.AffectController;
-            BuildUpBonus = (float)At.GetField(comp, "m_buildUpBonus");
+            BuildUpBonus = comp.m_buildUpBonus;
         }
     }
 }

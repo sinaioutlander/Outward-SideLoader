@@ -10,11 +10,10 @@ using RewiredDict = System.Collections.Generic.Dictionary<int, RewiredInputs>;
 // - Stian for the original version
 // - Lasyan3 for helping port it over to BepInEx
 // - johnathan-clause for logic fixes and improvements (https://github.com/johnathan-clause)
-// - Sinai fixed for IL2CPP and added GetButton/GetButtonDown helper methods
 
 namespace SideLoader
 {
-    public enum KeybindingsCategory : int
+    public enum KeybindingsCategory
     {
         CustomKeybindings = 0,
         Menus = 1,
@@ -28,7 +27,7 @@ namespace SideLoader
         Button = 1
     }
 
-    public enum ControlType : int
+    public enum ControlType
     {
         Keyboard,
         Gamepad,
@@ -121,14 +120,9 @@ namespace SideLoader
     {
         internal const int CUSTOM_CATEGORY = 0;
 
-        public static RewiredDict PlayerInputManager
-            => m_playerInputManager
-            ?? (m_playerInputManager = (RewiredDict)At.GetField<ControlsInput>(null, "m_playerInputManager"));
-
-        internal static RewiredDict m_playerInputManager;
+        public static RewiredDict PlayerInputManager => ControlsInput.m_playerInputManager;
 
         internal static Dictionary<string, KeybindInfo> s_customKeyDict = new Dictionary<string, KeybindInfo>();
-
         internal static readonly HashSet<string> s_loggedMissingKeyNames = new HashSet<string>();
 
         /// <summary>Use this to add a new Keybinding to the game.</summary>
@@ -136,10 +130,10 @@ namespace SideLoader
         /// <param name="category">The category to add to</param>
         /// <param name="controlType">What type of control this is</param>
         /// <param name="type">What type(s) of input it will accept</param>
-        public static void AddAction(string name, KeybindingsCategory category, ControlType controlType = ControlType.Keyboard, InputType type = InputType.Button)
+        public static void AddAction(string name, KeybindingsCategory category, ControlType controlType = ControlType.Keyboard, 
+            InputType type = InputType.Button)
         {
-            bool initialized = (bool)At.GetPropertyStatic(typeof(ReInput), "initialized");
-            if (initialized)
+            if (ReInput.initialized)
             {
                 SL.LogWarning("Tried to add Custom Keybinding too late. Add your keybinding earlier, such as in your BaseUnityPlugin.Awake() method.");
                 return;
@@ -250,12 +244,11 @@ namespace SideLoader
             // Get a reference to the added action
             var inputAction = userData.GetActionById(actionID);
 
-            // Configure our action according to args
-            At.SetField(inputAction, "_name", name);
-            At.SetField(inputAction, "_descriptiveName", name);
-            At.SetField(inputAction, "_type", (InputActionType)type);
-            At.SetField(inputAction, "_userAssignable", true);
-            At.SetField(inputAction, "_categoryId", (int)category);
+            inputAction.name = name;
+            inputAction.descriptiveName = name;
+            inputAction.type = (InputActionType)type;
+            inputAction.userAssignable = true;
+            inputAction.categoryId = (int)category;
 
             return inputAction;
         }
@@ -326,44 +319,35 @@ namespace SideLoader
                 // add the actual keybind mapping to this controller in Rewired
                 _controllerMap.CreateElementMap(customKey.actionID, Pole.Positive, KeyCode.None, ModifierKeyFlags.None);
 
-                var alreadyKnown = At.GetField(mapSection, "m_actionAlreadyKnown") as List<int>;
+                //var alreadyKnown = ;
 
                 // see if the UI has already been set up for this keybind
-                if (alreadyKnown.Contains(customKey.actionID))
+                if (mapSection.m_actionAlreadyKnown.Contains(customKey.actionID))
                     continue;
 
                 // set up the UI for this keybind (same as how game does it)
-                alreadyKnown.Add(customKey.actionID);
+                mapSection.m_actionAlreadyKnown.Add(customKey.actionID);
 
                 var action = ReInput.mapping.GetAction(customKey.actionID);
 
-                var actTemplate = At.GetField(mapSection, "m_actionTemplate") as ControlMappingAction;
-
-                actTemplate.gameObject.SetActive(true);
+                mapSection.m_actionTemplate.gameObject.SetActive(true);
                 if (action.type == InputActionType.Button)
-                {
-                    At.Invoke(mapSection, "CreateActionRow", CUSTOM_CATEGORY, action, AxisRange.Positive);
-                }
+                    mapSection.CreateActionRow(CUSTOM_CATEGORY, action, AxisRange.Positive);
                 else
                 {
                     if (mapSection.ControllerType == ControlMappingPanel.ControlType.Keyboard)
                     {
-                        At.Invoke(mapSection, "CreateActionRow", CUSTOM_CATEGORY, action, AxisRange.Positive);
-                        At.Invoke(mapSection, "CreateActionRow", CUSTOM_CATEGORY, action, AxisRange.Negative);
+                        mapSection.CreateActionRow(CUSTOM_CATEGORY, action, AxisRange.Positive);
+                        mapSection.CreateActionRow(CUSTOM_CATEGORY, action, AxisRange.Negative);
                     }
                     else
-                    {
-                        At.Invoke(mapSection, "CreateActionRow", CUSTOM_CATEGORY, action, AxisRange.Full);
-                    }
+                        mapSection.CreateActionRow(CUSTOM_CATEGORY, action, AxisRange.Full);
                 }
-                actTemplate.gameObject.SetActive(false);
+                mapSection.m_actionTemplate.gameObject.SetActive(false);
 
                 // Continue the loop of custom keys...
             }
         }
-
-        // This patch WAS used to add custom keys to existing categories.
-        // It has been disabled at the moment.
 
         [HarmonyPatch(typeof(ControlMappingPanel), "InitSections")]
         public class ControlMappingPanel_InitSections
@@ -416,7 +400,7 @@ namespace SideLoader
             // get the Rewired Category for the category we're using
             var category = ReInput.mapping.GetActionCategory(CUSTOM_CATEGORY);
             // override the internal name
-            At.SetField(category, "_name", "CustomKeybindings");
+            category.name = "CustomKeybindings";
 
             // Get reference to localization dict
             var genLoc = References.GENERAL_LOCALIZATION;

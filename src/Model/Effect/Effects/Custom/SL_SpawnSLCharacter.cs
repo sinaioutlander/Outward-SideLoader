@@ -57,7 +57,7 @@ namespace SideLoader
 
         protected SL_Character m_charTemplate;
 
-        protected override void AwakeInit()
+        public override void AwakeInit()
         {
             CustomCharacters.Templates.TryGetValue(this.SLCharacter_UID, out m_charTemplate);
 
@@ -65,7 +65,7 @@ namespace SideLoader
                 SL.LogWarning("SpawnSLCharacter.Awake - m_charTemplate is null, could not find from UID '" + this.SLCharacter_UID + "'");
         }
 
-        protected override bool TryTriggerConditions()
+        public override bool TryTriggerConditions()
         {
             if (m_charTemplate == null)
             {
@@ -76,7 +76,7 @@ namespace SideLoader
             return base.TryTriggerConditions();
         }
 
-        protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
+        public override void ActivateLocally(Character _affectedCharacter, object[] _infos)
         {
             if (PhotonNetwork.isNonMasterClientInRoom)
                 return;

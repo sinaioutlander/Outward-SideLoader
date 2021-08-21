@@ -16,14 +16,14 @@ namespace SideLoader
             var trap = item as DeployableTrap;
 
             if (this.OneTimeUse != null)
-                At.SetField(trap, "m_oneTimeUse", (bool)this.OneTimeUse);
+                trap.m_oneTimeUse = (bool)this.OneTimeUse;
            
             if (this.TrapRecipeEffects != null)
             {
                 var list = new List<TrapEffectRecipe>();
                 foreach (var holder in this.TrapRecipeEffects)
                     list.Add(holder.Apply());
-                At.SetField(trap, "m_trapRecipes", list.ToArray());
+                trap.m_trapRecipes = list.ToArray();
             }
         }
 
@@ -33,9 +33,9 @@ namespace SideLoader
 
             var trap = item as DeployableTrap;
 
-            OneTimeUse = (bool)At.GetField(trap, "m_oneTimeUse");
+            OneTimeUse = trap.m_oneTimeUse;
 
-            var recipes = (TrapEffectRecipe[])At.GetField(trap, "m_trapRecipes");
+            var recipes = trap.m_trapRecipes;
             if (recipes != null)
             {
                 var list = new List<SL_TrapEffectRecipe>();

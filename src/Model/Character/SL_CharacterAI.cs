@@ -192,11 +192,11 @@ namespace SideLoader
 
             // add our basic AIStatesPrefab to a CharacterAI component. This is the prefab set up by SetupBasicAIPrefab(), below.
             CharacterAI charAI = character.gameObject.AddComponent<CharacterAI>();
-            At.SetField(charAI, "m_character", character);
+            charAI.m_character = character;
             charAI.AIStatesPrefab = aiRootPrefab;
 
             // initialize the AI States (not entirely necessary, but helpful if we want to do something with the AI immediately after)
-            At.Invoke(charAI, "GetAIStates", null);
+            charAI.GetAIStates();
         }
     }
 

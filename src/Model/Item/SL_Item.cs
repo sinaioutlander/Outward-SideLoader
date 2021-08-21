@@ -238,10 +238,11 @@ namespace SideLoader
                 item.CastModifier = (Character.SpellCastModifier)this.CastModifier;
 
             if (this.CastType != null)
-                At.SetField(item, "m_activateEffectAnimType", (Character.SpellCastType)this.CastType);
+                //At.SetField(item, "m_activateEffectAnimType", (Character.SpellCastType)this.CastType);
+                item.m_activateEffectAnimType = (Character.SpellCastType)this.CastType;
 
             if (this.OverrideSellModifier != null)
-                At.SetField(item, "m_overrideSellModifier", (float)this.OverrideSellModifier);
+                item.m_overrideSellModifier = (float)this.OverrideSellModifier;
 
             if (this.Tags != null)
             {
@@ -263,8 +264,7 @@ namespace SideLoader
                 }
 
                 StatsHolder.ApplyToItem(stats);
-
-                At.SetField(item, "m_stats", stats);
+                item.m_stats = stats;
             }
 
             ApplyItemVisuals(item);
@@ -331,7 +331,7 @@ namespace SideLoader
 
             var ctgPath = pack.GetPathForCategory<ItemCategory>();
 
-            var texturesFolder = $@"{ctgPath}\{this.SubfolderName}\Textures";
+            var texturesFolder = Path.Combine(ctgPath, this.SubfolderName, "Textures");
 
             if (!pack.DirectoryExists(texturesFolder))
                 return;
@@ -550,10 +550,8 @@ namespace SideLoader
             MobileCastMovementMult = item.MobileCastMovementMult;
             RepairedInRest = item.RepairedInRest;
             BehaviorOnNoDurability = item.BehaviorOnNoDurability;
-
-            CastType = (Character.SpellCastType)At.GetField(item, "m_activateEffectAnimType");
-
-            this.OverrideSellModifier = (float)At.GetField(item, "m_overrideSellModifier");
+            CastType = item.m_activateEffectAnimType;
+            this.OverrideSellModifier = item.m_overrideSellModifier;
 
             if (item.GetComponent<ItemStats>() is ItemStats stats)
             {
@@ -623,11 +621,11 @@ namespace SideLoader
 
             try
             {
-                Sprite icon = At.GetField(item, "m_itemIcon") as Sprite;
+                Sprite icon = item.m_itemIcon;
                 if (!icon)
                     icon = ResourcesPrefabManager.Instance.GetItemIcon(item);
                 if (!icon)
-                    icon = (Sprite)At.GetField(item, "DefaultIcon");
+                    icon = item.DefaultIcon;
 
                 CustomTextures.SaveIconAsPNG(icon, dir, "icon");
 
@@ -642,7 +640,7 @@ namespace SideLoader
 
             if (item is LevelAttackSkill levelAtkSkill)
             {
-                var stages = (LevelAttackSkill.SkillStage[])At.GetField(levelAtkSkill, "m_skillStages");
+                var stages = levelAtkSkill.m_skillStages;
                 int idx = 1;
                 foreach (var stage in stages)
                 {
@@ -681,7 +679,7 @@ namespace SideLoader
                         if (materials.ContainsKey(name))
                             continue;
 
-                        string subdir = dir + @"\" + name;
+                        string subdir = Path.Combine(dir, name);
 
                         var matHolder = SL_Material.ParseMaterial(mat);
                         Serializer.SaveToXml(subdir, "properties", matHolder);

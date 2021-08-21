@@ -17,7 +17,7 @@ namespace SideLoader
         /// <returns></returns>
         public static Tag GetTag(string TagName, bool logging = true)
         {
-            var tags = (Tag[])At.GetField(TagSourceManager.Instance, "m_tags");
+            var tags = TagSourceManager.Instance.m_tags;
 
             var tag = tags.FirstOrDefault(x => x.TagName == TagName);
 
@@ -27,7 +27,7 @@ namespace SideLoader
             {
                 if (logging)
                 {
-                    SL.Log("GetTag :: Could not find a tag by the name: " + TagName);
+                    SL.Log("GetTag - Could not find a tag by the name: " + TagName);
                 }
                 return Tag.None;
             }
@@ -74,11 +74,11 @@ namespace SideLoader
             if (destroyExisting)
             {
                 list = new List<TagSourceSelector>();
-                At.SetField(tagsource, "m_tagSelectors", list);
-                At.SetField(tagsource, "m_tags", new List<Tag>());
+                tagsource.m_tagSelectors = list;
+                tagsource.m_tags = new List<Tag>();
             }
             else
-                list = At.GetField(tagsource, "m_tagSelectors") as List<TagSourceSelector>;
+                list = tagsource.m_tagSelectors;
 
             foreach (var name in tags)
             {

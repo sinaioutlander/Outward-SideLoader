@@ -25,7 +25,7 @@ namespace SideLoader
                 var list = new List<Building.ConstructionPhase>();
                 foreach (var phase in this.ConstructionPhases)
                     list.Add(phase.GeneratePhase());
-                At.SetField(comp, "m_constructionPhases", list.ToArray());
+                comp.m_constructionPhases = list.ToArray();
             }
 
             if (this.UpgradePhases != null)
@@ -33,7 +33,7 @@ namespace SideLoader
                 var list = new List<Building.ConstructionPhase>();
                 foreach (var phase in this.UpgradePhases)
                     list.Add(phase.GeneratePhase());
-                At.SetField(comp, "m_upgradePhases", list.ToArray());
+                comp.m_upgradePhases = list.ToArray();
             }
         }
 
@@ -45,15 +45,13 @@ namespace SideLoader
 
             var list = new List<SL_ConstructionPhase>();
 
-            var constructionPhases = At.GetField(building, "m_constructionPhases") as Building.ConstructionPhase[];
-            foreach (var phase in constructionPhases)
+            foreach (var phase in building.m_constructionPhases)
                 list.Add(SL_ConstructionPhase.SerializePhase(phase));
 
             ConstructionPhases = list.ToArray();
 
             list.Clear();
-            var upgradePhases = At.GetField(building, "m_upgradePhases") as Building.ConstructionPhase[];
-            foreach (var phase in upgradePhases)
+            foreach (var phase in building.m_upgradePhases)
                 list.Add(SL_ConstructionPhase.SerializePhase(phase));
 
             UpgradePhases = list.ToArray();

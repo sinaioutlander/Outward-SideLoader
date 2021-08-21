@@ -4,8 +4,8 @@ namespace SideLoader
 {
     public class SL_Summon : SL_Effect
     {
-        public const string CorruptionSpiritPath = @"CorruptionSpirit.prefab";
-        public const string SummonGhostPath = @"NewGhostOneHandedAlly.prefab";
+        public const string CorruptionSpiritPath = "CorruptionSpirit.prefab";
+        public const string SummonGhostPath = "NewGhostOneHandedAlly.prefab";
 
         public enum PrefabTypes
         {

@@ -163,7 +163,7 @@ namespace SideLoader
             GameObject.DontDestroyOnLoad(enchantmentObject);
             var enchantment = enchantmentObject.AddComponent<Enchantment>();
 
-            At.SetField<EffectPreset>(enchantment, "m_StatusEffectID", this.EnchantmentID);
+            enchantment.m_StatusEffectID = this.EnchantmentID;
 
             SetLocalization(this, out enchantment.CustomDescLocKey);
 

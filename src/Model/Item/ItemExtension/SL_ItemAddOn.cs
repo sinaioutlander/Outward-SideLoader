@@ -16,13 +16,13 @@ namespace SideLoader
             var comp = component as ItemAddOn;
 
             if (this.SnappingRadius != null)
-                At.SetField(comp, "m_snappingRadius", (float)this.SnappingRadius);
+                comp.m_snappingRadius = (float)this.SnappingRadius;
 
             if (this.AddOnCompatibleItemID != null)
             {
                 var addOnComptaible = ResourcesPrefabManager.Instance.GetItemPrefab((int)this.AddOnCompatibleItemID);
                 if (addOnComptaible)
-                    At.SetField(comp, "m_addOnCompatibleItem", addOnComptaible);
+                    comp.m_addOnCompatibleItem = addOnComptaible;
             }
 
             if (this.AddOnStatePrefabItemID != null)

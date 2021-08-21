@@ -14,13 +14,12 @@
                 return;
             }
 
-            At.SetField(component as AddStatusImmunity, "m_statusImmunity", new TagSourceSelector(tag));
+            (component as AddStatusImmunity).m_statusImmunity = new TagSourceSelector(tag);
         }
 
         public override void SerializeEffect<T>(T effect)
         {
-            var selector = (TagSourceSelector)At.GetField(effect as AffectNeed, "m_statusImmunity");
-            ImmunityTag = selector.Tag.TagName;
+            ImmunityTag = (effect as AddStatusImmunity).m_statusImmunity?.Tag.TagName;
         }
     }
 }

@@ -71,10 +71,10 @@ namespace SideLoader
 
             if (WasDead)
             {
-                At.SetField(character, "m_loadedDead", true);
+                character.m_loadedDead = true;
 
                 if (character.GetComponentInChildren<LootableOnDeath>() is LootableOnDeath loot)
-                    At.SetField(loot, "m_wasAlive", false);
+                    loot.m_wasAlive = false;
             }
 
             if (ItemSaves != null && ItemSaves.Count > 0)
@@ -128,9 +128,9 @@ namespace SideLoader
                         var effect = statusMgr.AddStatusEffect(status, dealer);
 
                         var remaining = float.Parse(data[2]);
-                        At.SetField(effect, "m_remainingTime", remaining);
+                        effect.m_remainingTime = remaining;
                         if (effect.StatusData != null)
-                            At.SetField(effect.StatusData, "m_remainingLifespan", remaining);
+                            effect.StatusData.m_remainingLifespan = remaining;
                     }
                 }
             }
@@ -190,7 +190,7 @@ namespace SideLoader
                     int i = 0;
                     foreach (var status in statuses)
                     {
-                        var sourceChar = (UID)At.GetField(status, "m_sourceCharacterUID")?.ToString();
+                        var sourceChar = status.m_sourceCharacterUID;
                         data.StatusData[i] = $"{status.IdentifierName}|{sourceChar}|{status.RemainingLifespan}";
                         i++;
                     }

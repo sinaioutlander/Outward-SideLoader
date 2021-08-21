@@ -82,9 +82,7 @@ namespace SideLoader
                         var orig = ResourcesPrefabManager.Instance.GetItemVisualPrefab(ResourcesPrefabPath);
 
                         if (!orig)
-                        {
                             SL.Log("SL_ItemVisual: Could not find an Item Visual at the Resources path: " + ResourcesPrefabPath);
-                        }
                         else
                         {
                             CustomItemVisuals.CloneAndSetVisuals(item, orig.gameObject, Type);
@@ -92,11 +90,14 @@ namespace SideLoader
                             switch (Type)
                             {
                                 case VisualPrefabType.VisualPrefab:
-                                    At.SetField(item, "m_visualPrefabPath", ResourcesPrefabPath); break;
+                                    item.m_visualPrefabPath = ResourcesPrefabPath;
+                                    break;
                                 case VisualPrefabType.SpecialVisualPrefabDefault:
-                                    At.SetField(item, "m_specialVisualPrefabDefaultPath", ResourcesPrefabPath); break;
+                                    item.m_specialVisualPrefabDefaultPath = ResourcesPrefabPath;
+                                    break;
                                 case VisualPrefabType.SpecialVisualPrefabFemale:
-                                    At.SetField(item, "m_specialVisualPrefabFemalePath", ResourcesPrefabPath); break;
+                                    item.m_specialVisualPrefabFemalePath = ResourcesPrefabPath;
+                                    break;
                             }
 
                             setPrefab = true;
@@ -106,9 +107,7 @@ namespace SideLoader
 
                 // If we didn't change the Visual Prefab in any way, clone the original to avoid conflicts.
                 if (!setPrefab)
-                {
                     origPrefab = CustomItemVisuals.CloneVisualPrefab(item, Type).transform;
-                }
 
                 // Get the actual visuals (for weapons and a lot of items, this is not the base prefab).
                 Transform actualVisuals = origPrefab.transform;
@@ -130,14 +129,11 @@ namespace SideLoader
                 if (actualVisuals)
                 {
                     var visualComp = origPrefab.GetComponent<ItemVisual>();
-
                     ApplyItemVisualSettings(visualComp, actualVisuals);
                 }
                 else
-                {
                     SL.LogWarning($"Could not find the visual model for '{origPrefab.name}'! " +
                         $"Ensure the model has a BoxCollider and MeshRenderer on the same GameObject!");
-                }
             }
         }
 

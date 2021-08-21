@@ -289,7 +289,7 @@ namespace SideLoader
             if (LootableOnDeath && this.DropTableUIDs != null && DropTableUIDs.Length > 0)
             {
                 if (character.GetComponent<LootableOnDeath>() is LootableOnDeath lootable
-                    && (bool)At.GetField(lootable, "m_wasAlive"))
+                    && lootable.m_wasAlive)
                 {
                     foreach (var tableUID in this.DropTableUIDs)
                     {
@@ -325,8 +325,8 @@ namespace SideLoader
             // set name
             if (Name != null)
             {
-                At.SetField(character, "m_nameLocKey", "");
-                At.SetField(character, "m_name", Name);
+                character.m_nameLocKey = "";
+                character.m_name = Name;
             }
 
             // set scale
@@ -378,7 +378,7 @@ namespace SideLoader
                 lootable.DropWeapons = this.DropWeapons;
                 lootable.EnabledPouch = this.DropPouchContents;
 
-                At.SetField(lootable, "m_character", character);
+                lootable.m_character = character;
 
                 // todo droptables
                 lootable.SkinDrops = new DropInstance[0];
@@ -473,51 +473,32 @@ namespace SideLoader
                 return;
 
             if (Health != null)
-            {
-                var m_maxHealthStat = (Stat)At.GetField(stats, "m_maxHealthStat");
-                m_maxHealthStat.AddStack(new StatStack(SL_STAT_ID, (float)Health - 100), false);
-            }
+                stats.m_maxHealthStat.AddStack(new StatStack(SL_STAT_ID, (float)Health - 100), false);
 
             if (HealthRegen != null)
             {
-                var m_healthRegenStat = (Stat)At.GetField(stats, "m_healthRegen");
-                m_healthRegenStat.AddStack(new StatStack(SL_STAT_ID, (float)HealthRegen), false);
+                stats.m_healthRegen.AddStack(new StatStack(SL_STAT_ID, (float)HealthRegen), false);
             }
 
             if (ImpactResist != null)
-            {
-                var m_impactResistance = (Stat)At.GetField(stats, "m_impactResistance");
-                m_impactResistance.AddStack(new StatStack(SL_STAT_ID, (float)ImpactResist), false);
-            }
+                stats.m_impactResistance.AddStack(new StatStack(SL_STAT_ID, (float)ImpactResist), false);
 
             if (Protection != null)
-            {
-                var m_damageProtection = (Stat[])At.GetField(stats, "m_damageProtection");
-                m_damageProtection[0].AddStack(new StatStack(SL_STAT_ID, (float)Protection), false);
-            }
+                stats.m_damageProtection[0].AddStack(new StatStack(SL_STAT_ID, (float)Protection), false);
 
             if (this.Barrier != null)
-            {
-                var m_barrier = (Stat)At.GetField(stats, "m_barrierStat");
-                m_barrier.AddStack(new StatStack(SL_STAT_ID, (float)Barrier), false);
-            }
+                stats.m_barrierStat.AddStack(new StatStack(SL_STAT_ID, (float)Barrier), false);
 
             if (Damage_Resists != null)
             {
-                var m_damageResistance = (Stat[])At.GetField(stats, "m_damageResistance");
                 for (int i = 0; i < 6; i++)
-                {
-                    m_damageResistance[i].AddStack(new StatStack(SL_STAT_ID, Damage_Resists[i]), false);
-                }
+                    stats.m_damageResistance[i].AddStack(new StatStack(SL_STAT_ID, Damage_Resists[i]), false);
             }
 
             if (Damage_Bonus != null)
             {
-                var m_damageTypesModifier = (Stat[])At.GetField(stats, "m_damageTypesModifier");
                 for (int i = 0; i < 6; i++)
-                {
-                    m_damageTypesModifier[i].AddStack(new StatStack(SL_STAT_ID, Damage_Bonus[i]), false);
-                }
+                    stats.m_damageTypesModifier[i].AddStack(new StatStack(SL_STAT_ID, Damage_Bonus[i]), false);
             }
 
             // status immunity
@@ -527,12 +508,10 @@ namespace SideLoader
                 foreach (var tagName in this.Status_Immunity)
                 {
                     if (CustomItems.GetTag(tagName) is Tag tag && tag != Tag.None)
-                    {
                         immunities.Add(new TagSourceSelector(tag));
-                    }
                 }
 
-                At.SetField(stats, "m_statusEffectsNaturalImmunity", immunities.ToArray());
+                stats.m_statusEffectsNaturalImmunity = immunities.ToArray();
             }
         }
 
@@ -591,7 +570,7 @@ namespace SideLoader
             {
                 // disable default visuals
                 visuals.transform.Find("HeadWhiteMaleA")?.gameObject.SetActive(false);
-                ((ArmorVisuals)At.GetField(visuals, "m_defaultHeadVisuals"))?.gameObject.SetActive(false);
+                visuals.m_defaultHeadVisuals?.gameObject.SetActive(false);
                 visuals.transform.Find("MBody0")?.gameObject.SetActive(false);
                 visuals.transform.Find("MFeet0")?.gameObject.SetActive(false);
 
@@ -613,7 +592,7 @@ namespace SideLoader
 
                 // get the skin material
                 var mat = (data.Gender == 0) ? presets.MSkins[data.SkinIndex] : presets.FSkins[data.SkinIndex];
-                At.SetField(visuals, "m_skinMat", mat);
+                visuals.m_skinMat = mat;
 
                 // apply the visuals
                 var hideface = false;
@@ -649,7 +628,7 @@ namespace SideLoader
         {
             var presets = CharacterManager.CharacterVisualsPresets;
             var key = $"Hair{_hairStyleIndex}";
-            var dict = At.GetField(visuals, "m_armorVisualPreview") as Dictionary<string, ArmorVisuals>;
+            var dict = visuals.m_armorVisualPreview;
 
             Material material = presets.HairMaterials[_hairColorIndex];
             ArmorVisuals hairVisuals;
@@ -669,12 +648,10 @@ namespace SideLoader
 
                 hairVisuals = visuals.InstantiateVisuals(presets.Hairs[_hairStyleIndex].transform, visuals.transform).GetComponent<ArmorVisuals>();
 
-                At.SetProperty(visuals, "DefaultHairVisuals", hairVisuals);
+                visuals.DefaultHairVisuals = hairVisuals;
 
                 if (!hairVisuals.gameObject.activeSelf)
-                {
                     hairVisuals.gameObject.SetActive(true);
-                }
 
                 // Add to dict
                 dict.Add(key, hairVisuals);
@@ -685,11 +662,11 @@ namespace SideLoader
                 if (!hairVisuals.Renderer)
                 {
                     var renderer = hairVisuals.GetComponent<SkinnedMeshRenderer>();
-                    At.SetField(hairVisuals, "m_skinnedMeshRenderer", renderer);
+                    hairVisuals.m_skinnedMeshRenderer = renderer;
                 }
 
                 hairVisuals.Renderer.material = material;
-                At.Invoke(visuals, "FinalizeSkinnedRenderer", hairVisuals.Renderer);
+                visuals.FinalizeSkinnedRenderer(hairVisuals.Renderer);
             }
 
             hairVisuals.ApplyToCharacterVisuals(visuals);

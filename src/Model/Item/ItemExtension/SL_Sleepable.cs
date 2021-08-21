@@ -26,7 +26,7 @@ namespace SideLoader
             {
                 var status = ResourcesPrefabManager.Instance.GetStatusEffectPrefab(this.RestStatusIdentifier);
                 if (status)
-                    At.SetField(comp, "m_restEffect", status);
+                    comp.m_restEffect = status;
             }
 
             if (this.AffectFoodDrink != null)

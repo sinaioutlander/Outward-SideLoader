@@ -40,7 +40,7 @@ namespace SideLoader
             // get "Trainer" component, and set the SkillTreeUID to our custom tree UID
             var trainerComp = trainertemplate.GetComponentInChildren<Trainer>();
             if (this.SkillTree != null)
-                At.SetField(trainerComp, "m_skillTreeUID", new UID(SkillTree.UID));
+                trainerComp.m_skillTreeUID = new UID(SkillTree.UID);
             else
                 SL.LogWarning("Setting up an SL_CharacterTrainer (" + this.UID + ") but no SL_SkillTree has been created for it!");
 
@@ -49,7 +49,7 @@ namespace SideLoader
             var graph = graphController.graph;
 
             // the template comes with an empty ActorParameter, we can use that for our NPC actor.
-            var actors = At.GetField(graph as DialogueTree, "_actorParameters") as List<DialogueTree.ActorParameter>;
+            var actors = (graph as DialogueTree)._actorParameters;
             actors[0].actor = trainerActor;
             actors[0].name = this.Name;
 

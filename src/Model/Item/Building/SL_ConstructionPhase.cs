@@ -64,7 +64,7 @@ namespace SideLoader
                 PhaseType = phase.ConstructionType,
                 HouseCountRequirement = phase.HouseCountRequirements,
                 ConstructionTime = phase.GetConstructionTime(),
-                ConstructionCosts = (BuildingResourceValues)At.GetField(phase, "m_constructionCosts"),
+                ConstructionCosts = phase.m_constructionCosts,
                 UpkeepCosts = phase.UpkeepCosts,
                 UpkeepProductions = phase.UpkeepProductions,
                 CapacityBonus = phase.CapacityBonus,

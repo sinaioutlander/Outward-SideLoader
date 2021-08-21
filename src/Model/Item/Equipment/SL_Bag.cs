@@ -10,24 +10,21 @@
         {
             base.ApplyToItem(item);
 
+            var bag = item as Bag;
+
             if (this.Capacity != null)
             {
                 // set container capacity
                 var container = item.transform.Find("Content").GetComponent<ItemContainerStatic>();
-                At.SetField<ItemContainer>(container, "m_baseContainerCapacity", (float)this.Capacity);
+                container.m_baseContainerCapacity = (float)this.Capacity;
             }
 
             // set restrict dodge 
             if (this.Restrict_Dodge != null)
-            {
-                At.SetField(item as Bag, "m_restrictDodge", (bool)this.Restrict_Dodge);
-            }
+                bag.m_restrictDodge = (bool)this.Restrict_Dodge;
 
             if (this.InventoryProtection != null)
-            {
-                // set invent prot
-                At.SetField(item as Bag, "m_inventoryProtection", this.InventoryProtection);
-            }
+                bag.m_inventoryProtection = (float)this.InventoryProtection;
         }
 
         public override void SerializeItem(Item item)
