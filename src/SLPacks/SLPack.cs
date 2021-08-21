@@ -23,11 +23,11 @@ namespace SideLoader
         public bool IsInLegacyFolder { get; internal set; }
 
         /// <summary>
-        /// Returns the folder path for this SL Pack (relative to Outward directory).
+        /// Returns the folder path for this SL Pack.
         /// </summary>
-        public virtual string FolderPath => !IsInLegacyFolder ?
-            $@"{Paths.PluginPath}\{ActualFolderName}\SideLoader" :
-            $@"{SL.LEGACY_SL_FOLDER}\{ActualFolderName}";
+        public virtual string FolderPath => !IsInLegacyFolder
+            ? Path.Combine(Paths.PluginPath, ActualFolderName, "SideLoader")
+            : Path.Combine(SL.LEGACY_SL_FOLDER, ActualFolderName);
 
         // Hard-coded dictionaries for easy access:
 
@@ -71,11 +71,7 @@ namespace SideLoader
             if (instance == null)
                 throw new Exception($"Trying to get folder path for '{type.FullName}', but category instance is null!");
 
-            string ret = this.FolderPath;
-            if (!string.IsNullOrEmpty(ret))
-                ret += Path.DirectorySeparatorChar;
-
-            return $@"{ret}{instance.FolderName}";
+            return Path.Combine(this.FolderPath, instance.FolderName);
         }
 
         public virtual bool DirectoryExists(string relativeDirectory)
@@ -208,7 +204,7 @@ namespace SideLoader
 
         internal void TryApplyItemTextureBundles()
         {
-            var bundlesFolder = $@"{this.FolderPath}\Items\TextureBundles";
+            var bundlesFolder = Path.Combine(this.FolderPath, "Items", "TextureBundles");
             if (Directory.Exists(bundlesFolder))
             {
                 foreach (var file in Directory.GetFiles(bundlesFolder))

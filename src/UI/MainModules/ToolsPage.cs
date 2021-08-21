@@ -32,10 +32,7 @@ namespace SideLoader.UI.Modules
 
             // update current sound track
             if (References.GLOBALAUDIOMANAGER)
-            {
-                var music = (GlobalAudioManager.Sounds)At.GetField<GlobalAudioManager>("s_currentMusic");
-                m_soundInput.text = music.ToString();
-            }
+                m_soundInput.text = GlobalAudioManager.s_currentMusic.ToString();
             else
                 m_soundInput.text = "<color=grey><i>GlobalAudioManager still loading...</i></color>";
         }

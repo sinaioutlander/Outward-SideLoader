@@ -198,7 +198,7 @@ namespace SideLoader.UI.SLPackViewer
                 Name = name
             };
 
-            Directory.CreateDirectory(Paths.PluginPath + $@"\{name}");
+            Directory.CreateDirectory(Path.Combine(Paths.PluginPath, name));
             SL.s_packs.Add(name, slPack);
 
             RefreshLoadedSLPacks();
@@ -562,8 +562,7 @@ namespace SideLoader.UI.SLPackViewer
                             }
 
                             var item = ResourcesPrefabManager.Instance.GetItemPrefab(slitem.Target_ItemID);
-                            var dir = m_currentPack.GetPathForCategory<ItemCategory>();
-                            dir += $@"\{slitem.SerializedSubfolderName}\Textures";
+                            var dir = Path.Combine(m_currentPack.GetPathForCategory<ItemCategory>(), slitem.SerializedSubfolderName, "Textures");
 
                             if (exportIconsWanted)
                                 SL_Item.SaveItemIcons(item, dir);
@@ -581,8 +580,7 @@ namespace SideLoader.UI.SLPackViewer
                                 return;
                             }
 
-                            var dir = m_currentPack.GetPathForCategory<StatusCategory>();
-                            dir += $@"\{template.SerializedSubfolderName}";
+                            var dir = Path.Combine(m_currentPack.GetPathForCategory<StatusCategory>(), template.SerializedSubfolderName);
 
                             Component comp;
                             if (template is SL_StatusEffect sl_Status)
@@ -620,9 +618,7 @@ namespace SideLoader.UI.SLPackViewer
             var dir = m_currentPack.GetPathForCategory(m_currentCategory.GetType());
             if (!string.IsNullOrEmpty(subname))
             {
-                //dir += $@"\{subname}";
-
-                var tempdir = dir + "\\" + subname;
+                var tempdir = Path.Combine(dir, subname);
 
                 if (Directory.Exists(tempdir))
                 {
@@ -632,11 +628,12 @@ namespace SideLoader.UI.SLPackViewer
 
                     int tried = 2;
                     var tempsubname = subname + "_" + tried;
+                    tempdir = Path.Combine(dir, tempsubname);
                     while (Directory.Exists(tempdir))
                     {
                         tried++;
                         tempsubname = subname + "_" + tried;
-                        tempdir = dir + "\\" + tempsubname;
+                        tempdir = Path.Combine(dir, tempsubname);
                     }
                     subname = tempsubname;
                 }
@@ -652,7 +649,7 @@ namespace SideLoader.UI.SLPackViewer
             else
                 name = Serializer.ReplaceInvalidChars(template.DefaultTemplateName);
 
-            var fullpath = $@"{dir}\{name}.xml";
+            var fullpath = Path.Combine(dir, $"{name}.xml");
 
             if (File.Exists(fullpath))
             {
@@ -661,15 +658,14 @@ namespace SideLoader.UI.SLPackViewer
                     return false;
 
                 // Force auto unique name (no input supplied)
-                var tempPath = $@"{dir}\{name}_";
                 int tried = 2;
-                var tempname = name + "_" + tried;
-                while (File.Exists($"{tempPath}{tried}.xml"))
+                var test = $"{name}_{tried}";
+                while (File.Exists(Path.Combine(dir, $"{test}.xml")))
                 {
                     tried++;
-                    tempname = name + "_" + tried;
+                    test = $"{name}_{tried}";
                 }
-                name = tempname;
+                name = test;
             }
 
             template.SerializedFilename = name;

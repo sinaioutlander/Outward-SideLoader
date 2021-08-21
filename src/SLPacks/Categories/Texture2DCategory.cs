@@ -25,7 +25,7 @@ namespace SideLoader.SLPacks.Categories
                 LoadTexture(pack, dict, dirPath, texPath, true);
             }
 
-            var localDir = dirPath + @"\Local";
+            var localDir = Path.Combine(dirPath, "Local");
             if (Directory.Exists(localDir))
             {
                 foreach (var localTex in pack.GetFiles(localDir, ".png"))

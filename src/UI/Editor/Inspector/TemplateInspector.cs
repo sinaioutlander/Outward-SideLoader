@@ -16,17 +16,16 @@ namespace SideLoader.UI.Editor
 
         internal void UpdateFullPathText()
         {
-            var path = $@"<b>XML Path:</b> ";
-
+            string path;
             if (RefPack.IsInLegacyFolder)
-                path += $@"Mods\SideLoader\{RefPack.Name}\{Template.PackCategory.FolderName}\";
+                path = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods", "SideLoader", RefPack.Name, Template.PackCategory.FolderName);
             else
-                path += $@"BepInEx\plugins\{RefPack.Name}\SideLoader\{Template.PackCategory.FolderName}\";
+                path = Path.Combine(BepInEx.Paths.PluginPath, RefPack.Name, "SideLoader", Template.PackCategory.FolderName);
 
             if (!string.IsNullOrEmpty(this.Template.SerializedSubfolderName))
-                path += $@"{Template.SerializedSubfolderName}\";
+                path = Path.Combine(path, Template.SerializedSubfolderName);
 
-            m_fullPathLabel.text = $@"{path}{Template.SerializedFilename}.xml";
+            m_fullPathLabel.text = Path.GetFullPath(Path.Combine(path, $"{Template.SerializedFilename}.xml"));
         }
 
         public TemplateInspector(object target, SLPack pack) : base(target)
@@ -81,9 +80,7 @@ namespace SideLoader.UI.Editor
             var directory = RefPack.GetPathForCategory(Template.PackCategory.GetType());
 
             if (Template.TemplateAllowedInSubfolder && !string.IsNullOrEmpty(this.Template.SerializedSubfolderName))
-            {
-                directory += $@"\{this.Template.SerializedSubfolderName}";
-            }
+                directory = Path.Combine(directory, Template.SerializedSubfolderName);
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
@@ -102,11 +99,9 @@ namespace SideLoader.UI.Editor
             var directory = RefPack.GetPathForCategory(Template.PackCategory.GetType());
 
             if (Template.TemplateAllowedInSubfolder && !string.IsNullOrEmpty(this.Template.SerializedSubfolderName))
-            {
-                directory += $@"\{this.Template.SerializedSubfolderName}";
-            }
+                directory = Path.Combine(directory, Template.SerializedSubfolderName);
 
-            var path = directory + "\\" + Template.SerializedFilename + ".xml";
+            var path = Path.Combine(directory, $"{Template.SerializedFilename}.xml");
             if (!File.Exists(path))
             {
                 SL.LogWarning("No file exists at " + path);
@@ -129,7 +124,7 @@ namespace SideLoader.UI.Editor
 
         // =========== UI ===============
 
-        internal Text m_fullPathLabel;
+        internal InputField m_fullPathLabel;
 
         public void ConstructTemplateUI()
         {
@@ -157,14 +152,14 @@ namespace SideLoader.UI.Editor
             fullPathGroup.childForceExpandWidth = true;
             fullPathGroup.spacing = 5;
 
-            var fullLabel = UIFactory.CreateLabel(fullPathRowObj, TextAnchor.MiddleLeft);
-            var fullText = fullLabel.GetComponent<Text>();
-            fullText.text = "Saving/Loading at:";
-            var fulllayout = fullLabel.AddComponent<LayoutElement>();
-            fulllayout.minWidth = 130;
+            var fullText = UIFactory.CreateLabel(fullPathRowObj, TextAnchor.MiddleLeft).GetComponent<Text>();
+            fullText.text = "XML Path:";
+            var fulllayout = fullText.gameObject.AddComponent<LayoutElement>();
+            fulllayout.minWidth = 70;
             fulllayout.flexibleWidth = 0;
-
-            m_fullPathLabel = fullText;
+            var fullLabel = UIFactory.CreateInputField(fullPathRowObj).GetComponent<InputField>();
+            fullLabel.readOnly = true;
+            m_fullPathLabel = fullLabel;
 
             // ========= Save/Load Row =========
 

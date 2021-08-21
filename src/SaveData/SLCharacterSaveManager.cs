@@ -97,11 +97,11 @@ namespace SideLoader.SaveData
             if (string.IsNullOrEmpty(folder))
                 throw new Exception("Trying to save world host SL_Characters, but couldn't get a folder!");
 
-            var saveFolder = $@"{folder}\{SLSaveManager.CHARACTERS_FOLDER}";
+            var saveFolder = Path.Combine(folder, SLSaveManager.CHARACTERS_FOLDER);
 
             return saveType == CharSaveType.Scene
-                ? saveFolder + $@"\{SceneManager.GetActiveScene().name}.chardata"
-                : saveFolder + $@"\followers.chardata";
+                ? Path.Combine(saveFolder, $"{SceneManager.GetActiveScene().name}.chardata")
+                : Path.Combine(saveFolder, $"followers.chardata");
         }
 
         // ~~~~~ Loading ~~~~~

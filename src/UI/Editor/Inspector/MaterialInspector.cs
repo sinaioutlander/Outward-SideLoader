@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace SideLoader.UI.Editor
@@ -21,7 +22,7 @@ namespace SideLoader.UI.Editor
 
         private void Load()
         {
-            var path = $@"{this.RefMaterial.m_serializedFolderPath}\properties.xml";
+            var path = Path.Combine(this.RefMaterial.m_serializedFolderPath, "properties.xml");
 
             if (Serializer.LoadFromXml(path) is SL_Material loadedData)
             {
@@ -52,9 +53,9 @@ namespace SideLoader.UI.Editor
             fullPathGroup.childForceExpandWidth = true;
             fullPathGroup.spacing = 5;
 
-            var fullLabel = UIFactory.CreateLabel(fullPathRowObj, TextAnchor.MiddleLeft);
+            var fullLabel = UIFactory.CreateInputField(fullPathRowObj);
             var fullText = fullLabel.GetComponent<Text>();
-            fullText.text = $@"<b>XML Path:</b> {RefMaterial.m_serializedFolderPath}\properties.xml";
+            fullText.text = $"<b>XML Path:</b> {Path.Combine(RefMaterial.m_serializedFolderPath, "properties.xml")}";
             var fulllayout = fullLabel.AddComponent<LayoutElement>();
             fulllayout.minWidth = 130;
             fulllayout.flexibleWidth = 0;

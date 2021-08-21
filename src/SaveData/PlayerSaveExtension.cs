@@ -20,9 +20,12 @@ namespace SideLoader.SaveData
             s_registeredModels = At.GetImplementationsOf(typeof(PlayerSaveExtension));
         }
 
-        public static string GetSaveFilePath<T>(string characterUID) 
-            => SLSaveManager.GetSaveFolderForCharacter(characterUID)
-               + "\\" + SLSaveManager.CUSTOM_FOLDER + "\\" + $"{typeof(T).FullName}.xml";
+        public static string GetSaveFilePath<T>(string characterUID)
+        {
+            return Path.Combine(SLSaveManager.GetSaveFolderForCharacter(characterUID), 
+                SLSaveManager.CUSTOM_FOLDER,
+                $"{typeof(T).FullName}.xml");
+        }
 
         /// <summary>
         /// Helper to manually try to load the saved data for an extension of type T, with the given character UID.
@@ -98,8 +101,7 @@ namespace SideLoader.SaveData
         // Internal load all extensions
         internal static void LoadExtensions(Character character)
         {
-            var dir = SLSaveManager.GetSaveFolderForCharacter(character)
-                      + "\\" + SLSaveManager.CUSTOM_FOLDER + "\\";
+            var dir = Path.Combine(SLSaveManager.GetSaveFolderForCharacter(character), SLSaveManager.CUSTOM_FOLDER);
 
             bool isWorldHost = character.UID == CharacterManager.Instance.GetWorldHostCharacter()?.UID;
 
@@ -136,10 +138,7 @@ namespace SideLoader.SaveData
         // Internal save all extensions
         internal static void SaveAllExtensions(Character character, bool isWorldHost)
         {
-            var baseDir = SLSaveManager.GetSaveFolderForCharacter(character)
-                          + "\\" + SLSaveManager.CUSTOM_FOLDER + "\\";
-
-            //bool isWorldHost = character.UID == CharacterManager.Instance.GetWorldHostCharacter()?.UID;
+            var baseDir = Path.Combine(SLSaveManager.GetSaveFolderForCharacter(character), SLSaveManager.CUSTOM_FOLDER);
 
             foreach (var type in s_registeredModels)
             {
@@ -147,7 +146,7 @@ namespace SideLoader.SaveData
                 {
                     PlayerSaveExtension model;
 
-                    var path = baseDir + type.FullName + ".xml";
+                    var path = Path.Combine(baseDir, $"{type.FullName}.xml");
                     if (File.Exists(path))
                     {
                         using (var file = File.OpenRead(path))

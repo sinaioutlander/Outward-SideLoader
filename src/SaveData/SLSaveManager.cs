@@ -28,15 +28,15 @@ namespace SideLoader.SaveData
 
         public static string GetSaveFolderForCharacter(string UID)
         {
-            var ret = $@"{SAVEDATA_FOLDER}\{UID}";
+            var charFolder = Path.Combine(SAVEDATA_FOLDER, UID);
 
             // Create the base folder structure for this player character (does nothing if already exists)
-            Directory.CreateDirectory(ret);
-            Directory.CreateDirectory(ret + $@"\{CHARACTERS_FOLDER}");
-            Directory.CreateDirectory(ret + $@"\{ITEMSPAWNS_FOLDER}");
-            Directory.CreateDirectory(ret + $@"\{CUSTOM_FOLDER}");
+            Directory.CreateDirectory(charFolder);
+            Directory.CreateDirectory(Path.Combine(charFolder, CHARACTERS_FOLDER));
+            Directory.CreateDirectory(Path.Combine(charFolder, ITEMSPAWNS_FOLDER));
+            Directory.CreateDirectory(Path.Combine(charFolder, CUSTOM_FOLDER));
 
-            return ret;
+            return charFolder;
         }
 
         // ~~~~~~~~~ Core internal ~~~~~~~~~
@@ -50,8 +50,9 @@ namespace SideLoader.SaveData
 
                 var charUID = __instance.CharSave.CharacterUID;
 
-                bool isHost = !PhotonNetwork.isNonMasterClientInRoom && !(bool)At.GetField(NetworkLevelLoader.Instance, "m_saveOnHostLost")
-                                && CharacterManager.Instance?.GetWorldHostCharacter()?.UID == charUID;
+                bool isHost = !PhotonNetwork.isNonMasterClientInRoom 
+                    && !NetworkLevelLoader.Instance.m_saveOnHostLost
+                    && CharacterManager.Instance?.GetWorldHostCharacter()?.UID == charUID;
 
                 // Save internal stuff for the host
                 if (isHost)
@@ -81,7 +82,7 @@ namespace SideLoader.SaveData
 
             if (charSaves.TryGetValue(host.UID, out CharacterSaveInstanceHolder holder))
             {
-                if (At.GetField(holder.CurrentSaveInstance, "m_loadedScene") is EnvironmentSave loadedScene)
+                if (holder.CurrentSaveInstance.m_loadedScene is EnvironmentSave loadedScene)
                 {
                     var areaHolder = AreaManager.Instance.GetAreaFromSceneName(loadedScene.AreaName);
                     if (areaHolder == null)

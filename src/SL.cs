@@ -30,7 +30,7 @@ namespace SideLoader
         private static string s_slFolder;
         internal static string INTERNAL_FOLDER => Path.Combine(SL_FOLDER, "_INTERNAL");
 
-        internal const string LEGACY_SL_FOLDER = @"Mods\SideLoader";
+        internal static readonly string LEGACY_SL_FOLDER = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Mods");
 
         // SL Packs
         internal static readonly Dictionary<string, SLPack> s_packs = new Dictionary<string, SLPack>();

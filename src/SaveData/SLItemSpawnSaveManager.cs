@@ -23,9 +23,7 @@ namespace SideLoader.SaveData
             if (string.IsNullOrEmpty(folder))
                 throw new Exception("Trying to save world host SL_ItemSpawns, but couldn't get a folder!");
 
-            var saveFolder = $@"{folder}\{SLSaveManager.ITEMSPAWNS_FOLDER}";
-
-            return saveFolder + $@"\{SceneManager.GetActiveScene().name}.itemdata";
+            return Path.Combine(folder, SLSaveManager.ITEMSPAWNS_FOLDER, $"{SceneManager.GetActiveScene().name}.itemdata");
         }
 
         internal static void SaveItemSpawns()

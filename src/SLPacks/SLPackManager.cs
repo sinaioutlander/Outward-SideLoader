@@ -76,10 +76,17 @@ namespace SideLoader.SLPacks
         {
             var packs = LoadBaseSLPacks();
 
+            // check for embedded zip SLPacks
             if (SL.s_embeddedArchivePacks.Any())
             { 
                 packs.AddRange(SL.s_embeddedArchivePacks.Values);
                 SL.Log("Added " + SL.s_embeddedArchivePacks.Count + " embedded packs to load order...");
+            }
+            // check for AssetBundle SLPacks
+            if (SL.s_bundlePacks.Any())
+            {
+                packs.AddRange(SL.s_bundlePacks.Values);
+                SL.Log("Added " + SL.s_bundlePacks.Count + " AssetBundle SL packs to load order...");
             }
 
             // Normal load order
@@ -133,7 +140,7 @@ namespace SideLoader.SLPacks
             // 'BepInEx\plugins\...' packs:
             foreach (var dir in Directory.GetDirectories(Paths.PluginPath))
             {
-                if (!Directory.Exists($@"{dir}\SideLoader"))
+                if (!Directory.Exists(Path.Combine(dir, "SideLoader")))
                     continue;
 
                 string name;

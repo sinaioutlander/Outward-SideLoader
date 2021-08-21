@@ -1,5 +1,6 @@
 ﻿using SideLoader.Helpers;
 using SideLoader.UI.Shared;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -92,7 +93,7 @@ namespace SideLoader.UI
 
         private static void LoadBundle()
         {
-            var bundle = AssetBundle.LoadFromFile(SL.INTERNAL_FOLDER + @"\slgui.bundle");
+            var bundle = AssetBundle.LoadFromFile(Path.Combine(SL.INTERNAL_FOLDER, "slgui.bundle"));
 
             //BackupShader = bundle.LoadAsset<Shader>("DefaultUI");
 
