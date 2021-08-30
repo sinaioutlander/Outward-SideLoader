@@ -1,10 +1,46 @@
 ﻿using HarmonyLib;
+using SideLoader.SLPacks.Categories;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace SideLoader.Patches
 {
+    [HarmonyPatch(typeof(DT_ItemSpawner), nameof(DT_ItemSpawner.Show))]
+    public class DT_ItemSpawner_Show
+    {
+        [HarmonyPrefix]
+        public static void Prefix(DT_ItemSpawner __instance)
+        {
+            if (__instance.m_allItems != null)
+            {
+                var itemsToAdd = new HashSet<Item>();
+                foreach (var itemToAdd in ItemCategory.AllCurrentTemplates)
+                    if (itemToAdd.CurrentPrefab)
+                        itemsToAdd.Add(itemToAdd.CurrentPrefab);
+
+                for (int i = __instance.m_allItems.Count - 1; i >= 0; i--)
+                {
+                    var item = __instance.m_allItems[i];
+                    if (!item)
+                    {
+                        __instance.m_allItems.RemoveAt(i);
+                        continue;
+                    }
+
+                    if (itemsToAdd.Contains(item))
+                        itemsToAdd.Remove(item);
+                }
+
+                if (itemsToAdd.Any())
+                {
+                    foreach (var item in itemsToAdd)
+                        __instance.m_allItems.Add(item);
+                }
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(DT_SkillProficiencyCheats), nameof(DT_SkillProficiencyCheats.Show))]
     public class DT_SkillProfiencyCheats_Show
     {
