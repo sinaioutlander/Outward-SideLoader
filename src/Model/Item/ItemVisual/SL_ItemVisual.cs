@@ -117,7 +117,9 @@ namespace SideLoader
                     {
                         foreach (Transform child in origPrefab)
                         {
-                            if (child.gameObject.activeSelf && child.GetComponent<BoxCollider>() && child.GetComponent<MeshRenderer>())
+                            if (child.gameObject.activeSelf 
+                                && (child.GetComponent<BoxCollider>() || child.GetComponent<MeshCollider>()) 
+                                && child.GetComponent<MeshRenderer>())
                             {
                                 actualVisuals = child;
                                 break;
